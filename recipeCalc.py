@@ -2,6 +2,7 @@ import json
 import time
 import os
 from datetime import datetime 
+import sqlite3
 
 #main menu
 def menu():
@@ -47,32 +48,35 @@ def menu():
             case _:
                 print("Not an available option, try again. ")
 
+ingredientFile = "ingredients.json"
+recipeFile = "recipes.json"
+
 def clearOutput():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 #check password
 def checkPassword(password):
     while True:
-        passwordQ = input("Enter password: ")
+        passwordQ = input("Enter password: ").lower()
         if passwordQ == password:
             return True
-        elif passwordQ.lower() == "exit":
+        elif passwordQ == "exit":
             return
         else:  
             time.sleep(0.5)
             print("password incorect, try again. ")
             
 #load ingredients from json file
-def loadIngredients():
+def loadIngredients(fileName):
     try:
-        with open("ingredients.json", "r") as file:
+        with open(fileName, "r") as file:
             return json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
         
 #save to the ingredients dict
-def saveIngredients():
-    with open("ingredients.json","w") as file: 
+def saveIngredients(fileName):
+    with open(fileName,"w") as file: 
         json.dump(ingredients, file)
     
 #clear all exising data
@@ -81,7 +85,7 @@ def clearData():
     delChoice = input("Are you sure you want to delete all ingredients? Enter 'yes' to confirm. ")
     if delChoice.lower() == "yes":
         if checkPassword("1"):
-            with open("ingredients.json", "w") as file:
+            with open(ingredientFile, "w") as file:
                 json.dump({}, file)  
             global ingredients  
             ingredients = {}
@@ -91,19 +95,20 @@ def clearData():
         print("Going back to menu. ")
 
 #load data into the fil
-ingredients = loadIngredients()
+ingredientsLoaded = loadIngredients(ingredientFile)
+ingredients = {key.lower(): value for key, value in ingredientsLoaded.items()}
 
 def getIngDetails():
     while True:
         try:
             ingWeight = float(input("Weight in g: "))
             if ingWeight < 0:
-                time.sleep(.5)
-                print("weight cant be less than 0, please try again. \n")
+                time.sleep(0.5)
+                print("Weight cant be less than 0, please try again. \n")
             else:
                 break
         except ValueError:
-            time.sleep(.5)
+            time.sleep(0.5)
             print("Weight must be a number, try again. \n")  
     #get ingredient price           
     while True: 
@@ -111,12 +116,12 @@ def getIngDetails():
             ingPrice = float(input("Price in £: "))
             print()
             if ingPrice < 0:
-                time.sleep(.5)
+                time.sleep(0.5)
                 print("Price cant be less than 0. ")
             else:
                 break
         except ValueError:
-            time.sleep(.5)
+            time.sleep(0.5)
             print("Price must be a number, try again. \n")
     return ingWeight, ingPrice
 
@@ -126,14 +131,14 @@ currentTime = datetime.now().strftime("%Y-%m-%d")
 def addIngredients():
     print("Enter 'done' to finish\n")
     while True:
-        ingName = input("Enter name of the ingredient: ").strip()
-        if ingName.lower() == "done":
-            time.sleep(.5)
+        ingName = input("Enter name of the ingredient: ").strip().lower()
+        if ingName == "done":
+            time.sleep(0.5)
             print("Exiting the function. Ingredients saved! \n")
             break
 
         if ingName in ingredients:
-            time.sleep(.5)
+            time.sleep(0.5)
             print("Ingredient already added, try another one. ")
             continue    
 
@@ -148,7 +153,7 @@ def addIngredients():
             ingredients[currentTime] = {}
 
         ingredients[currentTime][ingName] = {"weight" : ingWeight, "price" : ingPrice}
-        saveIngredients()
+        saveIngredients(ingredientFile)
         time.sleep(0.5)
 
 #show all ingredients in order
@@ -165,7 +170,8 @@ def displayIngredients(skipQ=False):
             for ingredient, subDict in ingData.items():
                 weight = subDict.get("weight", "N/A")
                 price = subDict.get("price", "N/A")
-                print(f"{times:<15} {ingredient:<15} {weight:<15} {price:<15} ")
+                ingredient_display = ingredient.capitalize()
+                print(f"{times:<15} {ingredient_display:<15} {weight:<15} {price:<15} ")
         print()
 
     if not skipQ:
@@ -185,8 +191,8 @@ def deleteIngredients():
             print("No ingredients to delete. ")
             return
             
-        ingName = input("Choose ingredient to delete: ")
-        if ingName.lower() == "cancel":
+        ingName = input("Choose ingredient to delete: ").strip().lower()
+        if ingName == "cancel":
             print("Going back to menu. ")
             time.sleep(2)
             return
@@ -197,16 +203,16 @@ def deleteIngredients():
                 print("Ingredient not found, try again. ")
                 continue
             else: 
-                warningChoice = input(f"Are you sure you want to delete {ingName} ? Y/N: ")
+                warningChoice = input(f"Are you sure you want to delete {ingName} ? Y/N: ").strip().lower()
                 print()
-                if warningChoice.upper() == "N":
+                if warningChoice == "n":
                     print(f"{ingName} wasn't deleted. ")
                     return
-                elif warningChoice.upper() == "Y":
+                elif warningChoice == "Y":
                     del ingData[ingName]
                     print(f"{ingName} was deleted, going back to menu. ")
                     time.sleep(2)
-                    saveIngredients()
+                    saveIngredients(ingredientFile)
                     return
         time.sleep(0.5)
                 
@@ -215,9 +221,9 @@ def updateIngredient():
     print("Enter 'done' to go back to the menu.")
     displayIngredients(skipQ=True)
     while True:
-        ingName = input("Choose ingredient to update: ")
+        ingName = input("Choose ingredient to update: ").strip().lower()
 
-        if ingName.lower() == "done":
+        if ingName == "done":
             print("Going back to the menu.")
             return  
         
@@ -231,7 +237,7 @@ def updateIngredient():
                     ingredients[currentTime] = {}
 
                 ingredients[currentTime][ingName] = {"weight" : ingWeight, "price" : ingPrice}
-                saveIngredients()
+                saveIngredients(ingredientFile)
                 print(f"{ingName} has been updated.")
                 break  
 
@@ -251,13 +257,13 @@ def calculateCake():
     print()
     recipe = []
     while True:
-        ingredientChoice = input("Enter an ingredient to add: ")
-        if ingredientChoice.lower() == "exit":
+        ingredientChoice = input("Enter an ingredient to add: ").strip().lower()
+        if ingredientChoice == "exit":
             print("Exiting function...")
             time.sleep(.5)
             return
 
-        if ingredientChoice.lower() == "calculate":
+        if ingredientChoice == "calculate":
             if len(recipe) < 2:
                 print("Add at least 2 ingredients. ")
             else:
@@ -311,4 +317,8 @@ def calculateCake():
     print()
     input("Press any key to go menu. ")
         
+def addRecipe():
+    pass
+
+
 menu()
