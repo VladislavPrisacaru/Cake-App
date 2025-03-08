@@ -5,21 +5,50 @@ from datetime import datetime
 import sqlite3
 
 #main menu
-def menu():
+def mainMenu():
     while True:
         clearOutput()
-        print("----------Cake Shop-------")
-        print("1. Add ingredients") #done  
-        print("2. Delete ingredient") #done
-        print("3. Update ingredients") #done
-        print("4. Calculate 1 cake") #done  
-        print("5. Clear data") #done            
-        print("6. Display all ingredients") #done
-        print("7. Add a recipe") #non working
-        print("8. Exit") #done
-    
-        choice = input("Please choose an option (1 - 8). \n")
-    
+        print("==========Cake Shop==========")
+        print("1. Ingredient Management")
+        print("2. Recipe Management")
+        print("3. Calculate 1 cake")
+        print("4. Exit")
+        print("=============================")
+
+        choice = input("Please choose an option (1 - 4). \n")
+
+        match choice:
+            case "1":
+                clearOutput()
+                ingredientMenu()
+            case "2":
+                clearOutput()
+                recipeMenu()
+            case "3":
+                clearOutput()
+                calculateCake()
+            case "4":
+                print("Exiting the program, bye.")
+                time.sleep(1)
+                break
+            case _:
+                print("Not an available option, try again. ")
+                time.sleep(1)
+
+def ingredientMenu():
+    while True:
+        clearOutput()
+        print("==========Ingredient Menu==========")
+        print("1. Add ingredients")
+        print("2. Delete ingredient")
+        print("3. Update ingredients")
+        print("4. Display all ingredients")
+        print("5. Clear data")
+        print("6. Back to main menu")
+        print("===================================")
+
+        choice = input("Please choose an option (1 - 6). \n")
+
         match choice:
             case "1":
                 clearOutput()
@@ -32,21 +61,43 @@ def menu():
                 updateIngredient()
             case "4":
                 clearOutput()
-                calculateCake()
+                displayIngredients()
             case "5":
                 clearOutput()
                 clearData()
             case "6":
-                clearOutput()
-                displayIngredients()
-            case "7":
-                clearOutput()
-                pass
-            case "8":
-                print("exiting the program, bye.")
-                time.sleep(1)
+                break
             case _:
                 print("Not an available option, try again. ")
+                time.sleep(1)
+
+def recipeMenu():
+    while True:
+        clearOutput()
+        print("==========Recipe Menu==========")
+        print("1.  [WIP] Add a recipe")
+        print("2.  [WIP] Display all recipes")
+        print("3.  [WIP] Calculate recipe cost")
+        print("4.  Back to main menu")
+        print("==============================")
+
+        choice = input("Please choose an option (1 - 4). \n")
+
+        match choice:
+            case "1":
+                clearOutput()
+                pass
+            case "2":
+                clearOutput()
+                pass
+            case "3":
+                clearOutput()
+                pass
+            case "4":
+                break
+            case _:
+                print("Not an available option, try again. ")
+                time.sleep(1)
 
 ingredientFile = "ingredients.json"
 recipeFile = "recipes.json"
@@ -67,7 +118,7 @@ def checkPassword(password):
             print("password incorect, try again. ")
             
 #load ingredients from json file
-def loadIngredients(fileName):
+def loadData(fileName):
     try:
         with open(fileName, "r") as file:
             return json.load(file)
@@ -75,7 +126,7 @@ def loadIngredients(fileName):
         return {}
         
 #save to the ingredients dict
-def saveIngredients(fileName):
+def saveData(fileName):
     with open(fileName,"w") as file: 
         json.dump(ingredients, file)
     
@@ -95,8 +146,9 @@ def clearData():
         print("Going back to menu. ")
 
 #load data into the fil
-ingredientsLoaded = loadIngredients(ingredientFile)
+ingredientsLoaded = loadData(ingredientFile)
 ingredients = {key.lower(): value for key, value in ingredientsLoaded.items()}
+
 
 def getIngDetails():
     while True:
@@ -153,7 +205,7 @@ def addIngredients():
             ingredients[currentTime] = {}
 
         ingredients[currentTime][ingName] = {"weight" : ingWeight, "price" : ingPrice}
-        saveIngredients(ingredientFile)
+        saveData(ingredientFile)
         time.sleep(0.5)
 
 #show all ingredients in order
@@ -212,7 +264,7 @@ def deleteIngredients():
                     del ingData[ingName]
                     print(f"{ingName} was deleted, going back to menu. ")
                     time.sleep(2)
-                    saveIngredients(ingredientFile)
+                    saveData(ingredientFile)
                     return
         time.sleep(0.5)
                 
@@ -237,7 +289,7 @@ def updateIngredient():
                     ingredients[currentTime] = {}
 
                 ingredients[currentTime][ingName] = {"weight" : ingWeight, "price" : ingPrice}
-                saveIngredients(ingredientFile)
+                saveData(ingredientFile)
                 print(f"{ingName} has been updated.")
                 break  
 
@@ -321,4 +373,4 @@ def addRecipe():
     pass
 
 
-menu()
+mainMenu()
