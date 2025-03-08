@@ -14,35 +14,38 @@ def menu():
         print("4. Calculate 1 cake") #done  
         print("5. Clear data") #done            
         print("6. Display all ingredients") #done
-        print("7. Exit") #done
+        print("7. Add a recipe") #non working
+        print("8. Exit") #done
     
-        choice = input("Please choose an option (1 - 7). \n")
+        choice = input("Please choose an option (1 - 8). \n")
     
-        if choice == "1":
-            clearOutput()
-            addIngredients()
-        elif choice == "2":
-            clearOutput()
-            deleteIngredients()
-        elif choice == "3":
-            clearOutput()
-            updateIngredient()
-        elif choice == "4":
-            clearOutput()
-            calculateCake()
-        elif choice == "5":
-            clearOutput()
-            clearData()
-        elif choice == "6":
-            clearOutput()
-            displayIngredients()
-        elif choice == "7":
-            print("exiting the program, bye.")
-            time.sleep(1)
-            print(ingredients)
-            time.sleep(10)
-        else:
-            print("Not an available option, try again. ")
+        match choice:
+            case "1":
+                clearOutput()
+                addIngredients()
+            case "2":
+                clearOutput()
+                deleteIngredients()
+            case "3":
+                clearOutput()
+                updateIngredient()
+            case "4":
+                clearOutput()
+                calculateCake()
+            case "5":
+                clearOutput()
+                clearData()
+            case "6":
+                clearOutput()
+                displayIngredients()
+            case "7":
+                clearOutput()
+                pass
+            case "8":
+                print("exiting the program, bye.")
+                time.sleep(1)
+            case _:
+                print("Not an available option, try again. ")
 
 def clearOutput():
     os.system('cls' if os.name == 'nt' else 'clear')
