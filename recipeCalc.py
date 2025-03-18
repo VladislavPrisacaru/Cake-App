@@ -22,6 +22,16 @@ class DatabaseManager:
             current_date TEXT NOT NULL
             );
         """)
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS sales_data(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sales_date TEXT NOT NULL,
+            cake_name TEXT NOT NULL,
+            cake_type TEXT NOT NULL, 
+            cake_weight INTEGER NOT NULL,
+            primary_price REAL NOT NULL,
+            selling_price REAL NOT NULL              
+            );""")
         self.connection.commit()
     
     def add_ingredients(self, name, weight, price):
@@ -35,6 +45,11 @@ class DatabaseManager:
         except sqlite3.IntegrityError:
             print(f"ingredient '{name}' already exists")
             return False
+    
+    def add_sales(self, sales_date, cake_name, cake_type, cake_weight, primary_price, selling_price):
+        self.cursor.execute("""INSERT INTO sales_data (sales_date, cake_name, cake_type, cake_weight, primary_price, selling_price)
+        VALUES (?, ?, ?, ?, ?, ?);""", (sales_date, cake_name, cake_type, cake_weight, primary_price, selling_price))
+        self.connection.commit()
         
     def delete_ingredient(self, name):
         self.cursor.execute("DELETE FROM ingredients WHERE name = ?;", (name,))
@@ -54,12 +69,17 @@ class DatabaseManager:
         self.cursor.execute("SELECT current_date, name, weight, price FROM  ingredients;")
         return self.cursor.fetchall()
     
+    def get_all_sales(self):
+        self.cursor.execute("SELECT sales_date, cake_name, cake_type, cake_weight, primary_price, selling_price FROM sales_data")
+        return self.cursor.fetchall()
+
     def get_chosen_ingredient(self, name):
         self.cursor.execute("SELECT weight, price FROM ingredients WHERE name = ?", (name,))
         return self.cursor.fetchone()
     
     def clear_data(self):
         self.cursor.execute("DELETE FROM ingredients")
+        self.cursor.execute("DELETE FROM sales_data")
         self.connection.commit()
     
     def close_conn(self):
@@ -71,6 +91,26 @@ class IngredientManager:
         self.db_manager = db_manager
         self.existing_ingredient = None
         self.ingredient_data = None
+
+    def add_sales(self):
+        prompts = [
+            "Enter date of the sale: ",
+            "Enter name of the cake: ",
+            "Enter type of the cake: ",
+            "Enter weight of the cake: ",
+            "Enter raw price of the cake: ",
+            "Enter selling price of the cake: "
+        ]
+        
+        inputs = []
+        for prompt in prompts:
+            user_input = input(prompt)
+            if 'cancel' in user_input.lower():
+                print("Operation canceled, going back to menu")
+                return  
+            inputs.append(user_input)  
+
+        self.db_manager.add_sales(*inputs)
 
     def get_ing_details(self):
         while True:
@@ -132,6 +172,7 @@ class IngredientManager:
             df = pd.DataFrame(self.ingredient_data, columns=columns)
             df["Name"] = df["Name"].str.capitalize()
             df.index += 1
+            df = df.sort_values(by="Name")
             print(df.to_string(index=1, index_names=False, justify="right"))
         else:
             print("No ingredients found.")
@@ -140,6 +181,20 @@ class IngredientManager:
         if not skip_q:
             input("Press any key to go back. ")
             time.sleep(0.5)
+
+    def display_sales(self):
+        self.sales_data = self.db_manager.get_all_sales()
+
+        if self.sales_data:
+            columns = ["sales_date", "cake_name", "cake_type", "cake_weight", "primary_price", "selling_price"]
+            df = pd.DataFrame(self.sales_data, columns=columns)
+            df.index += 1
+            print(df.to_string(index=1, index_names=False, justify="right"))
+        else:
+            print("No data found.")
+            return
+        
+        input("Press any key to go back. ")
         
     def delete_ingredients(self):
         print("Current ingredients.")
@@ -301,10 +356,10 @@ def recipe_menu():
     while True:
         clear_output()
         print("==========Recipe Menu==========")
-        print("1.  [WIP] Add a recipe")
-        print("2.  [WIP] Display all recipes")
-        print("3.  [WIP] Calculate recipe cost")
-        print("4.  Back to main menu")
+        print(" 1.  [WIP] Add a recipe")
+        print(" 2.  [WIP] Display all recipes")
+        print(" 3.  [WIP] Calculate recipe cost")
+        print(" 4.  Back to main menu")
         print("==============================")
 
         choice = input("Please choose an option (1 - 4). \n")
@@ -329,12 +384,12 @@ def ingredient_menu():
     while True:
         clear_output()
         print("==========Ingredient Menu==========")
-        print("1. Add ingredients")
-        print("2. Delete ingredient")
-        print("3. Update ingredients")
-        print("4. Display all ingredients")
-        print("5. Clear data")
-        print("6. Back to main menu")
+        print(" 1.  Add ingredients")
+        print(" 2.  Delete ingredient")
+        print(" 3.  Update ingredients")
+        print(" 4.  Display all ingredients")
+        print(" 5.  Clear data")
+        print(" 6.  Back to main menu")
         print("===================================")
 
         choice = input("Please choose an option (1 - 6). \n")
@@ -361,14 +416,37 @@ def ingredient_menu():
                 print("Not an available option, try again. ")
                 time.sleep(1)
 
+def sales_menu():
+    while True:
+        clear_output()
+        print("=======Sales Manager=======")
+        print(" 1.  Add Sales")
+        print(" 2.  Display All Sales")
+        print(" 3.  Go Back to Menu")
+
+        choice = input("Please choose an option (1 - 3). \n")
+        match choice:
+            case "1":
+                clear_output()
+                ingredient_manager.add_sales()
+            case "2":
+                clear_output()
+                ingredient_manager.display_sales()
+            case "3":
+                break
+            case _:
+                print("Not an available option, try again. ")
+                time.sleep(1)
+
 def main_menu():
     while True:
         clear_output()
         print("==========Cake Shop==========")
-        print("1. Ingredient Management")
-        print("2. Recipe Management")
-        print("3. Calculate 1 cake")
-        print("4. Exit")
+        print(" 1.  Ingredient Management")
+        print(" 2.  Recipe Management")
+        print(" 3.  Sales Manager")
+        print(" 4.  Calculate 1 cake")
+        print(" 5.  Exit")
         print("=============================")
 
         choice = input("Please choose an option (1 - 4). \n")
@@ -382,8 +460,11 @@ def main_menu():
                 recipe_menu()
             case "3":
                 clear_output()
-                ingredient_manager.calculate_cake()
+                sales_menu()
             case "4":
+                clear_output()
+                ingredient_manager.calculate_cake()
+            case "5":
                 db_manager.close_conn()
                 print("Exiting the program, bye.")
                 time.sleep(1)
@@ -391,5 +472,4 @@ def main_menu():
             case _:
                 print("Not an available option, try again. ")
                 time.sleep(1)
-
 main_menu()
