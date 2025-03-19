@@ -93,24 +93,38 @@ class IngredientManager:
         self.ingredient_data = None
 
     def add_sales(self):
+        print("Please enter sales data, if you make a mistake or want to go back \n just write 'cancel' and yuo will be taken to the menu\n" )
         prompts = [
-            "Enter date of the sale: ",
-            "Enter name of the cake: ",
-            "Enter type of the cake: ",
-            "Enter weight of the cake: ",
-            "Enter raw price of the cake: ",
-            "Enter selling price of the cake: "
+            ("Enter date of the sale (YYYY-MM-DD): ", lambda date: bool(datetime.strptime(date, "%Y-%m-%d"))),
+            ("Enter name of the cake: ", lambda string: isinstance(string, str) and len(string) > 0),
+            ("Enter type of the cake: ", lambda string: isinstance(string, str) and len(string) > 0),
+            ("Enter weight of the cake: ", lambda num: num.isdigit() and int(num) > 0),
+            ("Enter raw price of the cake: ", lambda price: price.replace('.', '', 1).isdigit() and float(price) > 0),
+            ("Enter selling price of the cake: ", lambda price: price.replace('.', '', 1).isdigit() and float(price) > 0)
         ]
         
-        inputs = []
-        for prompt in prompts:
-            user_input = input(prompt)
-            if 'cancel' in user_input.lower():
-                print("Operation canceled, going back to menu")
-                return  
-            inputs.append(user_input)  
+        sale_data = []
 
-        self.db_manager.add_sales(*inputs)
+        for prompt, validate in prompts:
+            while True:
+                try:
+                    user_input = input(prompt).strip()
+
+                    if user_input.lower() == "cancel":
+                        sale_data = []
+                        print("Going back to menu. ")
+                        return
+
+                    if validate(user_input):
+                        sale_data.append(user_input)
+                        break
+                    else:
+                        print("You did something wrong, please try again.\n")    
+                except ValueError:
+                    print("You did something wrong, please try again.\n")         
+                
+        self.db_manager.add_sales(*sale_data)
+        print()
 
     def get_ing_details(self):
         while True:
