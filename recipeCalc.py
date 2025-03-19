@@ -200,10 +200,12 @@ class IngredientManager:
         self.sales_data = self.db_manager.get_all_sales()
 
         if self.sales_data:
-            columns = ["sales_date", "cake_name", "cake_type", "cake_weight", "primary_price", "selling_price"]
+            columns = ["Date", "Cake Name", "Cake Type", "Cake Weight(g)", "Raw Price(£)", "Selling Price(£)"]
             df = pd.DataFrame(self.sales_data, columns=columns)
+            df["Cake Name"] = df["Cake Name"].str.capitalize()
+            df["Cake Type"] = df["Cake Type"].str.capitalize()
             df.index += 1
-            print(df.to_string(index=1, index_names=False, justify="right"))
+            print(df.to_string(index=True, index_names=False, justify="right"))
         else:
             print("No data found.")
             return
