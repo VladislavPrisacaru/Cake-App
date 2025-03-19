@@ -70,7 +70,7 @@ class DatabaseManager:
         return self.cursor.fetchall()
     
     def get_all_sales(self):
-        self.cursor.execute("SELECT sales_date, cake_name, cake_type, cake_weight, primary_price, selling_price FROM sales_data")
+        self.cursor.execute("SELECT sales_date, cake_name, cake_type, cake_weight, primary_price, selling_price FROM sales_data ORDER BY sales_date ASC")
         return self.cursor.fetchall()
 
     def get_chosen_ingredient(self, name):
@@ -93,7 +93,7 @@ class IngredientManager:
         self.ingredient_data = None
 
     def add_sales(self):
-        print("Please enter sales data, if you make a mistake or want to go back \n just write 'cancel' and yuo will be taken to the menu\n" )
+        print("Please enter sales data, if you make a mistake or want to go back \njust write 'cancel' and you will be taken to the menu\n" )
         prompts = [
             ("Enter date of the sale (YYYY-MM-DD): ", lambda date: bool(datetime.strptime(date, "%Y-%m-%d"))),
             ("Enter name of the cake: ", lambda string: isinstance(string, str) and len(string) > 0),
