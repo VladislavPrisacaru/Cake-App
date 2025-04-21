@@ -62,11 +62,19 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(main_widget)    
         main_layout = QHBoxLayout(main_widget)
 
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+
         self.sidebar = Sidebar(self)
-        main_layout.addWidget(self.sidebar)
 
         self.stacked_widget = QStackedWidget(self)
-        main_layout.addWidget(self.stacked_widget)
+
+        splitter = QSplitter(Qt.Orientation.Horizontal)
+        splitter.addWidget(self.sidebar)
+        splitter.addWidget(self.stacked_widget)
+
+        splitter.setSizes([240, 1000])
+        main_layout.addWidget(splitter)
 
         self.showMaximized()
 
