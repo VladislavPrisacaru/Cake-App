@@ -103,28 +103,29 @@ class IngredientManager:
             ("Enter selling price of the cake: ", lambda price: price.replace('.', '', 1).isdigit() and float(price) > 0)
         ]
         
-        sale_data = []
+        while True:
+            sale_data = []
 
-        for prompt, validate in prompts:
-            while True:
-                try:
-                    user_input = input(prompt).strip()
+            for prompt, validate in prompts:
+                while True:
+                    try:
+                        user_input = input(prompt).strip()
 
-                    if user_input.lower() == "cancel":
-                        sale_data = []
-                        print("Going back to menu. ")
-                        return
+                        if user_input.lower() == "cancel":
+                            sale_data = []
+                            print("Going back to menu. ")
+                            return
 
-                    if validate(user_input):
-                        sale_data.append(user_input)
-                        break
-                    else:
-                        print("You did something wrong, please try again.\n")    
-                except ValueError:
-                    print("You did something wrong, please try again.\n")         
-                
-        self.db_manager.add_sales(*sale_data)
-        print()
+                        if validate(user_input):
+                            sale_data.append(user_input)
+                            break
+                        else:
+                            print("You did something wrong, please try again.\n")    
+                    except ValueError:
+                        print("You did something wrong, please try again.\n")         
+                    
+            self.db_manager.add_sales(*sale_data)
+            print(f"{sale_data[1]} was successfuly registered \n")
 
     def get_ing_details(self):
         while True:
