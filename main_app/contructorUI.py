@@ -17,6 +17,7 @@ class Sidebar(QFrame):
         self.layout = QVBoxLayout(self) 
 
         self.create_btns()
+        self.active_btn = False
 
         self.layout.addStretch()
         self.layout.setSpacing(15)
@@ -47,9 +48,21 @@ class Sidebar(QFrame):
         self.ingredient_btn = self.create_button("Ingredients")
         self.sales_btn = self.create_button("Sales")
 
-        self.main_btn.clicked.connect(lambda: self.main_window.switch_window("main"))
-        self.add_recipe_btn.clicked.connect(lambda: self.main_window.switch_window("add_recipe"))
+        self.main_btn.clicked.connect(lambda: self.set_active(self.main_btn, "main"))
+        self.add_recipe_btn.clicked.connect(lambda: self.set_active(self.add_recipe_btn, "add_recipe"))
 
+    def set_active(self, btn, name):
+        if self.active_btn:
+            self.active_btn.setStyleSheet(
+            "QPushButton {background-color: transparent; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 15px;}"
+            "QPushButton:hover {background-color: #0D4A62}"
+            "QPushButton:pressed {background-color: #052B38}")
+        
+        self.active_btn = btn
+        self.active_btn.setStyleSheet(
+            "QPushButton {background-color: #0D4A62; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 15px;}")
+
+        self.main_window.switch_window(name)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -76,6 +89,9 @@ class MainWindow(QMainWindow):
         splitter.setSizes([240, 1000])
         main_layout.addWidget(splitter)
 
+        self.create_addrecipe_window()
+        self.create_main_window()
+
         self.showMaximized()
 
     def create_addrecipe_window(self):
@@ -84,21 +100,22 @@ class MainWindow(QMainWindow):
         self.add_recipe_window.setLayout(layout)
 
         button = QPushButton("Hi")
+        button.setStyleSheet("color: black;")
         layout.addWidget(button)
         self.stacked_widget.addWidget(self.add_recipe_window)
 
     def create_main_window(self):
         self.main_page = QWidget(self)
         self.main_page.setLayout(QVBoxLayout())
-        self.main_page.layout().addWidget(QLabel("Welcome to Cake MD!"))
+        lbl = QLabel("Welcome to Cake MD!")
+        lbl.setStyleSheet("color: black")
+        self.main_page.layout().addWidget(lbl)
         self.stacked_widget.addWidget(self.main_page)
             
     def switch_window(self, name):
         if name == "add_recipe":
-            self.create_addrecipe_window()
             self.stacked_widget.setCurrentWidget(self.add_recipe_window)
         elif name == "main":
-            self.create_main_window()
             self.stacked_widget.setCurrentWidget(self.main_page)
     
 
