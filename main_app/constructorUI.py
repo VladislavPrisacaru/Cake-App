@@ -70,6 +70,7 @@ class Sidebar(QFrame):
             "QPushButton:pressed {background-color: #052B38}")
         
         self.active_btn = btn
+        self.active_btn_name = name
         self.active_btn.setStyleSheet(
             "QPushButton {background-color: #0D4A62; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 15px;}")
 
@@ -145,28 +146,24 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.add_sales_page)  
             
     def switch_window(self, name):
-        if name == "add_recipe":
-            self.sidebar.apply_animation(self.add_recipe_window)
-            self.stacked_widget.setCurrentWidget(self.add_recipe_window)
-        elif name == "main":
-            self.sidebar.apply_animation(self.main_page)
-            self.stacked_widget.setCurrentWidget(self.main_page)
-        elif name == "calculate":
-            self.sidebar.apply_animation(self.calculate_page)
-            self.stacked_widget.setCurrentWidget(self.calculate_page)
-        elif name == "ingredients":
-            self.sidebar.apply_animation(self.ingredients_page)
-            self.stacked_widget.setCurrentWidget(self.ingredients_page)
-        elif name == "recipes":
-            self.sidebar.apply_animation(self.recipes_page)
-            self.stacked_widget.setCurrentWidget(self.recipes_page)
-        elif name == "sales":
-            self.sidebar.apply_animation(self.sales_page)
-            self.stacked_widget.setCurrentWidget(self.sales_page)
-        elif name == "add_sales":
-            self.sidebar.apply_animation(self.add_sales_page)
-            self.stacked_widget.setCurrentWidget(self.add_sales_page)
+        widget_map = {
+        "add_recipe": self.add_recipe_window,
+        "main": self.main_page,
+        "calculate": self.calculate_page,
+        "ingredients": self.ingredients_page,
+        "recipes": self.recipes_page,
+        "sales": self.sales_page,
+        "add_sales": self.add_sales_page
+    }
     
+        widget = widget_map.get(name)
+
+        if self.stacked_widget.currentWidget() == widget:
+            return
+        
+        self.sidebar.apply_animation(widget)
+        self.stacked_widget.setCurrentWidget(widget)
+
 
 app = QApplication(sys.argv)
 window = MainWindow()
