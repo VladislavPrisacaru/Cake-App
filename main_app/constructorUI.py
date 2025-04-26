@@ -1,14 +1,15 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QFrame, QLabel, QGridLayout, QSizePolicy, QHBoxLayout, QStackedWidget, QSplitter
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont, QScreen
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QFrame, QLabel, QGridLayout, QSizePolicy, QHBoxLayout, QStackedWidget, QSplitter,
+QGraphicsOpacityEffect)
+from PyQt6.QtCore import Qt, QEasingCurve, QPropertyAnimation
+from PyQt6.QtGui import QFont,  QScreen
 import sys
 from MainWidget import MainWidget
-from AddRecipeWidget import AddRecipeWidget
-from CalculateWidget import CalculateWidget
+from AddRecipe import AddRecipeWidget
+from CalculateRecipe import CalculateWidget
 from Ingredients import IngredientsWidget
 from Sales import SalesWidget
 from Recipes import RecipesWidget
-from AddSalesWidget import AddSalesWidget
+from AddSales import AddSalesWidget
 
 class Sidebar(QFrame):
     def __init__(self, main_window):
@@ -73,6 +74,21 @@ class Sidebar(QFrame):
             "QPushButton {background-color: #0D4A62; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 15px;}")
 
         self.main_window.switch_window(name)
+    
+    def apply_animation(self, widget):
+        opacity_effect = QGraphicsOpacityEffect(widget)
+        widget.setGraphicsEffect(opacity_effect)
+
+        fade_animation = QPropertyAnimation(opacity_effect, b"opacity")
+        fade_animation.setDuration(300)
+        fade_animation.setStartValue(0)
+        fade_animation.setEndValue(1)
+        fade_animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
+
+        fade_animation.start()
+        self.anim_group = fade_animation  # Keep reference alive
+
+        widget.show()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -127,22 +143,28 @@ class MainWindow(QMainWindow):
 
         self.add_sales_page = AddSalesWidget(self)
         self.stacked_widget.addWidget(self.add_sales_page)  
-        
             
     def switch_window(self, name):
         if name == "add_recipe":
+            self.sidebar.apply_animation(self.add_recipe_window)
             self.stacked_widget.setCurrentWidget(self.add_recipe_window)
         elif name == "main":
+            self.sidebar.apply_animation(self.main_page)
             self.stacked_widget.setCurrentWidget(self.main_page)
         elif name == "calculate":
+            self.sidebar.apply_animation(self.calculate_page)
             self.stacked_widget.setCurrentWidget(self.calculate_page)
         elif name == "ingredients":
+            self.sidebar.apply_animation(self.ingredients_page)
             self.stacked_widget.setCurrentWidget(self.ingredients_page)
         elif name == "recipes":
+            self.sidebar.apply_animation(self.recipes_page)
             self.stacked_widget.setCurrentWidget(self.recipes_page)
         elif name == "sales":
+            self.sidebar.apply_animation(self.sales_page)
             self.stacked_widget.setCurrentWidget(self.sales_page)
         elif name == "add_sales":
+            self.sidebar.apply_animation(self.add_sales_page)
             self.stacked_widget.setCurrentWidget(self.add_sales_page)
     
 
