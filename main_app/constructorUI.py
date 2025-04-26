@@ -10,6 +10,7 @@ from Ingredients import IngredientsWidget
 from Sales import SalesWidget
 from Recipes import RecipesWidget
 from AddSales import AddSalesWidget
+from Options import OptionsWidget
 
 class Sidebar(QFrame):
     def __init__(self, main_window):
@@ -53,6 +54,7 @@ class Sidebar(QFrame):
         self.recipes_btn = self.create_button("Recipes")
         self.ingredient_btn = self.create_button("Add Ingredients")
         self.sales_btn = self.create_button("Sales")
+        self.options_btn = self.create_button("Options")
 
         self.main_btn.clicked.connect(lambda: self.set_active(self.main_btn, "main"))
         self.add_recipe_btn.clicked.connect(lambda: self.set_active(self.add_recipe_btn, "add_recipe"))
@@ -61,6 +63,7 @@ class Sidebar(QFrame):
         self.recipes_btn.clicked.connect(lambda: self.set_active(self.recipes_btn, "recipes"))
         self.ingredient_btn.clicked.connect(lambda: self.set_active(self.ingredient_btn, "ingredients"))
         self.sales_btn.clicked.connect(lambda: self.set_active(self.sales_btn, "sales"))
+        self.options_btn.clicked.connect(lambda: self.set_active(self.options_btn, "options"))
 
     def set_active(self, btn, name):
         if self.active_btn:
@@ -143,7 +146,10 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.sales_page)
 
         self.add_sales_page = AddSalesWidget(self)
-        self.stacked_widget.addWidget(self.add_sales_page)  
+        self.stacked_widget.addWidget(self.add_sales_page) 
+
+        self.options_page = OptionsWidget(self)
+        self.stacked_widget.addWidget(self.options_page)
             
     def switch_window(self, name):
         widget_map = {
@@ -153,8 +159,8 @@ class MainWindow(QMainWindow):
         "ingredients": self.ingredients_page,
         "recipes": self.recipes_page,
         "sales": self.sales_page,
-        "add_sales": self.add_sales_page
-    }
+        "add_sales": self.add_sales_page,
+        "options": self.options_page }
     
         widget = widget_map.get(name)
 
