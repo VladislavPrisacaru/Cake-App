@@ -51,7 +51,7 @@ class Sidebar(QFrame):
         self.calc_btn = self.create_button("Calculate Recipe")
         self.add_sales_btn = self.create_button("Add Sales")
         self.recipes_btn = self.create_button("Recipes")
-        self.ingredient_btn = self.create_button("Ingredients")
+        self.ingredient_btn = self.create_button("Add Ingredients")
         self.sales_btn = self.create_button("Sales")
 
         self.main_btn.clicked.connect(lambda: self.set_active(self.main_btn, "main"))
