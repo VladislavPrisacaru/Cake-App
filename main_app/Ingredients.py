@@ -1,11 +1,12 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QFrame, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QFont, QScreen
 from Database import DatabaseManager
 
 class IngredientsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
 
         self.main_layout = QVBoxLayout()
         self.setLayout(self.main_layout)
@@ -32,4 +33,52 @@ class IngredientsWidget(QWidget):
         add_btn.clicked.connect(self.set_ingredient_info)
 
     def set_ingredient_info(self):
-        pass
+        self.modal_widget = ModalWidget(self)
+        self.modal_widget.show()
+
+
+class ModalWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setGeometry(parent.rect())
+        
+        self.overlay = QWidget(self)
+        self.overlay.setGeometry(parent.rect())
+        self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 70);")  # Semi-transparent black
+        self.overlay.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, False)
+        self.overlay.show()
+
+        # Modal content
+        self.setStyleSheet("background-color: transparent;")  # Make sure the modal itself is transparent
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+
+        layout = QVBoxLayout(self)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.pop_up = GetIngredients(self)
+        self.pop_up.setFixedSize(300, 200)
+        layout.addWidget(self.pop_up)
+    
+    # def show(self):
+    #     super().show()
+    
+class GetIngredients(QWidget):
+    def __init__(self, parent = None):
+        super().__init__(parent)
+
+        self.setStyleSheet("background-color: lightgray; border-radius: 7px;")
+        self.initUI()
+
+    def initUI(self):
+        layout = QVBoxLayout(self)
+        label = QLabel("Ingredients List")
+        label.setStyleSheet("color: black; font-size: 18px;")
+        layout.addWidget(label)
+
+        save_btn = QPushButton("Save")
+        save_btn.setStyleSheet("color: black;")
+        save_btn.clicked.connect(self.close_popup)
+        layout.addWidget(save_btn)
+    
+    def close_popup(self):
+        self.parent().close()
