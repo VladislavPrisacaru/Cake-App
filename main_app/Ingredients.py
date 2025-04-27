@@ -43,13 +43,11 @@ class ModalWidget(QWidget):
         self.setGeometry(parent.rect())
         
         self.overlay = QWidget(self)
-        self.overlay.setGeometry(parent.rect())
+        self.overlay.setGeometry(self.rect())
         self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 70);")  # Semi-transparent black
         self.overlay.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, False)
         self.overlay.show()
 
-        # Modal content
-        self.setStyleSheet("background-color: transparent;")  # Make sure the modal itself is transparent
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
@@ -58,9 +56,11 @@ class ModalWidget(QWidget):
         self.pop_up = GetIngredients(self)
         self.pop_up.setFixedSize(300, 200)
         layout.addWidget(self.pop_up)
+
+        self.setLayout(layout)
     
-    # def show(self):
-    #     super().show()
+    def show(self):
+        super().show()
     
 class GetIngredients(QWidget):
     def __init__(self, parent = None):

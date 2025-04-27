@@ -108,16 +108,15 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
 
+        # Sidebar stays static here
         self.sidebar = Sidebar(self)
 
+        # Stacked widget for the content
         self.stacked_widget = QStackedWidget(self)
 
-        splitter = QSplitter(Qt.Orientation.Horizontal)
-        splitter.addWidget(self.sidebar)
-        splitter.addWidget(self.stacked_widget)
-
-        splitter.setSizes([240, 1000])
-        main_layout.addWidget(splitter)
+        # Add sidebar and stacked widget to the layout
+        main_layout.addWidget(self.sidebar)
+        main_layout.addWidget(self.stacked_widget)
 
         self.add_all_widgets()
 
