@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QFrame, QLab
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QScreen
 from Database import DatabaseManager
+from Animations import fade_in_animation
 
 class IngredientsWidget(QWidget):
     def __init__(self, parent=None):
@@ -34,8 +35,10 @@ class IngredientsWidget(QWidget):
 
     def set_ingredient_info(self):
         self.modal_widget = ModalWidget(self)
+        self.modal_widget.raise_()  # Ensure the modal is on top
         self.modal_widget.show()
-
+        #fade_in_animation(self.modal_widget)
+        
 
 class ModalWidget(QWidget):
     def __init__(self, parent=None):
@@ -58,10 +61,8 @@ class ModalWidget(QWidget):
         layout.addWidget(self.pop_up)
 
         self.setLayout(layout)
-    
-    def show(self):
-        super().show()
-    
+        
+
 class GetIngredients(QWidget):
     def __init__(self, parent = None):
         super().__init__(parent)

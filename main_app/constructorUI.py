@@ -11,6 +11,7 @@ from Sales import SalesWidget
 from Recipes import RecipesWidget
 from AddSales import AddSalesWidget
 from Options import OptionsWidget
+from Animations import fade_in_animation
 
 class Sidebar(QFrame):
     def __init__(self, main_window):
@@ -79,20 +80,6 @@ class Sidebar(QFrame):
 
         self.main_window.switch_window(name)
     
-    def apply_animation(self, widget):
-        opacity_effect = QGraphicsOpacityEffect(widget)
-        widget.setGraphicsEffect(opacity_effect)
-
-        fade_animation = QPropertyAnimation(opacity_effect, b"opacity")
-        fade_animation.setDuration(300)
-        fade_animation.setStartValue(0)
-        fade_animation.setEndValue(1)
-        fade_animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
-
-        fade_animation.start()
-        self.anim_group = fade_animation  # Keep reference alive
-
-        widget.show()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -166,7 +153,7 @@ class MainWindow(QMainWindow):
         if self.stacked_widget.currentWidget() == widget:
             return
         
-        self.sidebar.apply_animation(widget)
+        fade_in_animation(widget)
         self.stacked_widget.setCurrentWidget(widget)
 
 
