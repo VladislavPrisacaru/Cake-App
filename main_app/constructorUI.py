@@ -1,8 +1,6 @@
-from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QFrame, QLabel, QGridLayout, QSizePolicy, QHBoxLayout, QStackedWidget, QSplitter,
-QGraphicsOpacityEffect)
-from PyQt6.QtCore import Qt, QEasingCurve, QPropertyAnimation
-from PyQt6.QtGui import QFont,  QScreen
-import sys
+from PySide6.QtWidgets import (
+    QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, 
+    QFrame, QSizePolicy, QHBoxLayout, QStackedWidget )
 from MainWidget import MainWidget
 from AddRecipe import AddRecipeWidget
 from CalculateRecipe import CalculateWidget
@@ -12,17 +10,18 @@ from Recipes import RecipesWidget
 from AddSales import AddSalesWidget
 from Options import OptionsWidget
 from Animations import fade_in_animation
+import sys
 
 class Sidebar(QFrame):
     def __init__(self, main_window):
         super().__init__()
 
         self.setStyleSheet("background-color: #07394B;")
-        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.setMinimumWidth(240)
 
         self.main_window = main_window
-        self.layout = QVBoxLayout(self) 
+        self.layout = QVBoxLayout(self)
 
         self.create_btns()
         self.active_btn = False
@@ -30,7 +29,7 @@ class Sidebar(QFrame):
         self.layout.addStretch()
         self.layout.setSpacing(15)
         self.layout.setContentsMargins(0, 15, 0, 0)
-    
+
     def create_button(self, text):
         button = QPushButton(text, self)
         button.setFixedHeight(45)
@@ -46,7 +45,7 @@ class Sidebar(QFrame):
         screen_geometry = screen.availableGeometry()
         self.screen_height = screen_geometry.height()
         return self.screen_height
-    
+
     def create_btns(self):
         self.main_btn = self.create_button("Main")
         self.add_recipe_btn = self.create_button("Add Recipe")
@@ -69,39 +68,35 @@ class Sidebar(QFrame):
     def set_active(self, btn, name):
         if self.active_btn:
             self.active_btn.setStyleSheet(
-            "QPushButton {background-color: transparent; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 15px;}"
-            "QPushButton:hover {background-color: #0D4A62}"
-            "QPushButton:pressed {background-color: #052B38}")
-        
+                "QPushButton {background-color: transparent; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 15px;}"
+                "QPushButton:hover {background-color: #0D4A62}"
+                "QPushButton:pressed {background-color: #052B38}")
+
         self.active_btn = btn
         self.active_btn_name = name
         self.active_btn.setStyleSheet(
             "QPushButton {background-color: #0D4A62; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 15px;}")
 
         self.main_window.switch_window(name)
-    
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("Cake MD")
-        self.setStyleSheet("background-color: lightgray;")        
+        self.setStyleSheet("background-color: lightgray;")
 
         main_widget = QWidget(self)
-        self.setCentralWidget(main_widget)    
+        self.setCentralWidget(main_widget)
         main_layout = QHBoxLayout(main_widget)
 
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
 
-        # Sidebar stays static here
         self.sidebar = Sidebar(self)
-
-        # Stacked widget for the content
         self.stacked_widget = QStackedWidget(self)
 
-        # Add sidebar and stacked widget to the layout
         main_layout.addWidget(self.sidebar)
         main_layout.addWidget(self.stacked_widget)
 
@@ -132,27 +127,28 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.sales_page)
 
         self.add_sales_page = AddSalesWidget(self)
-        self.stacked_widget.addWidget(self.add_sales_page) 
+        self.stacked_widget.addWidget(self.add_sales_page)
 
         self.options_page = OptionsWidget(self)
         self.stacked_widget.addWidget(self.options_page)
-            
+
     def switch_window(self, name):
         widget_map = {
-        "add_recipe": self.add_recipe_window,
-        "main": self.main_page,
-        "calculate": self.calculate_page,
-        "ingredients": self.ingredients_page,
-        "recipes": self.recipes_page,
-        "sales": self.sales_page,
-        "add_sales": self.add_sales_page,
-        "options": self.options_page }
-    
+            "add_recipe": self.add_recipe_window,
+            "main": self.main_page,
+            "calculate": self.calculate_page,
+            "ingredients": self.ingredients_page,
+            "recipes": self.recipes_page,
+            "sales": self.sales_page,
+            "add_sales": self.add_sales_page,
+            "options": self.options_page
+        }
+
         widget = widget_map.get(name)
 
         if self.stacked_widget.currentWidget() == widget:
             return
-        
+
         fade_in_animation(widget)
         self.stacked_widget.setCurrentWidget(widget)
 

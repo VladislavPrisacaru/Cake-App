@@ -1,6 +1,7 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
+from PySide6.QtWidgets import (
+    QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout)
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon
 
 class AddRecipeWidget(QWidget):
     def __init__(self, parent=None):
@@ -9,8 +10,10 @@ class AddRecipeWidget(QWidget):
         self.setStyleSheet("background-color: lightgray;")
 
         layout = QHBoxLayout(self)
-        label = QLabel("Add Recipes")
+        label = QLabel("Add Recipe")
         label.setStyleSheet("color: black; font-size: 25px;")
         self.setLayout(layout)
-        layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
+
+        layout.addWidget(label, alignment=Qt.AlignCenter | Qt.AlignTop)
         layout.setContentsMargins(0, 50, 0, 0)
+        

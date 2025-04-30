@@ -1,17 +1,17 @@
-from PyQt6.QtWidgets import QGraphicsOpacityEffect
-from PyQt6.QtCore import QEasingCurve, QPropertyAnimation
+from PySide6.QtWidgets import QGraphicsOpacityEffect
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation
 
-def fade_in_animation(widget):
-        opacity_effect = QGraphicsOpacityEffect(widget)
-        widget.setGraphicsEffect(opacity_effect)
+def fade_in_animation(widget, duration=300):
+    opacity_effect = QGraphicsOpacityEffect(widget)
+    widget.setGraphicsEffect(opacity_effect)
 
-        fade_animation = QPropertyAnimation(opacity_effect, b"opacity")
-        fade_animation.setDuration(300)
-        fade_animation.setStartValue(0)
-        fade_animation.setEndValue(1)
-        fade_animation.setEasingCurve(QEasingCurve(QEasingCurve.Type.InOutQuad))
+    fade_animation = QPropertyAnimation(opacity_effect, b"opacity")
+    fade_animation.setDuration(duration)
+    fade_animation.setStartValue(0)
+    fade_animation.setEndValue(1)
+    fade_animation.setEasingCurve(QEasingCurve.InOutQuad)  # <-- Simpler in PySide6
 
-        fade_animation.start()
-        widget._fade_animation = fade_animation  # Keep reference alive
+    fade_animation.start()
+    widget._fade_animation = fade_animation  # Keep reference alive so it doesn’t die like your motivation on Monday
 
-        widget.show()
+    widget.show()
