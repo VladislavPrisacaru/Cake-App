@@ -1,8 +1,5 @@
-from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QPushButton, QFrame, QLabel,
-    QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy)
+from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont, QScreen
 from Database import DatabaseManager  # keep this if used elsewhere
 from Animations import fade_in_animation  # optional
 
@@ -59,10 +56,21 @@ class ModalWidget(QWidget):
         layout.setAlignment(Qt.AlignCenter)
 
         self.pop_up = GetIngredients(self)
-        self.pop_up.setFixedSize(300, 200)
+          
+        self.pop_up.setMinimumSize(500, 700)
+        layout.addStretch()  
         layout.addWidget(self.pop_up)
+        layout.addStretch() 
 
         self.setLayout(layout)
+
+
+    def center_widget(self):
+        parent_rect = self.parent().rect()
+        widget_rect = self.rect()
+        x = parent_rect.x() + (parent_rect.width() - widget_rect.width()) // 2
+        y = parent_rect.y() + (parent_rect.height() - widget_rect.height()) // 2
+        self.move(x, y)
 
 
 class GetIngredients(QWidget):
@@ -70,19 +78,57 @@ class GetIngredients(QWidget):
         super().__init__(parent)
 
         self.setStyleSheet("background-color: lightgray; border-radius: 7px;")
-        self.initUI()
+        main_widget = QWidget(self)
+        layout = self.initUI()
+        main_widget.setLayout(layout)
 
     def initUI(self):
-        layout = QVBoxLayout(self)
+        self.layout = QVBoxLayout()
 
-        label = QLabel("Ingredients List")
-        label.setStyleSheet("color: black; font-size: 18px;")
-        layout.addWidget(label)
+        label = QLabel("Add Ingredients")
+        label.setStyleSheet("color: black; font-size: 30px;")
+        label.setAlignment(Qt.AlignCenter | Qt.AlignTop)
+        self.layout.addWidget(label)
 
-        save_btn = QPushButton("Save")
-        save_btn.setStyleSheet("color: black;")
-        save_btn.clicked.connect(self.close_popup)
-        layout.addWidget(save_btn)
+        ing_name_label = QLabel("Ingredient Name:")
+        ing_name_label.setStyleSheet("color: black; font-size: 16px;")
+        self.layout.addWidget(ing_name_label)
+
+        ing_name_line = QLineEdit()
+        ing_name_line.setStyleSheet("background-color: white; color: black;")
+        self.layout.addWidget(ing_name_line)
+
+        h_layout_1 = QHBoxLayout()
+        ing_type_label = QLabel("Ingredient Weight:")
+        ing_type_label.setStyleSheet("color: black; font-size: 16px;")
+        h_layout_1.addWidget(ing_type_label)
+        
+        ing_type_combo = QComboBox()
+        ing_type_combo.addItems(["g", "kg", "l", "lb", "oz"])
+        ing_type_combo.setStyleSheet("background-color: white; color: black;")
+        h_layout_1.addWidget(ing_type_combo)
+        self.layout.addLayout(h_layout_1)
+
+        h_layout_2 = QHBoxLayout()
+        ing_price_label = QLabel("Ingredient Price:")
+        ing_price_label.setStyleSheet("color: black; font-size: 16px;")
+        h_layout_2.addWidget(ing_price_label)
+
+        ing_price_combo = QComboBox()
+        ing_price_combo.addItems([ "£", "€", "$"])
+        ing_price_combo.setStyleSheet("background-color: white; color: black;")
+        h_layout_2.addWidget(ing_price_combo)
+        self.layout.addLayout(h_layout_2)
+
+        save_btn2 = QPushButton("Save")
+        save_btn2.setStyleSheet("background-color: white; color: black;")
+        save_btn2.clicked.connect(self.close_popup)
+        self.layout.addWidget(save_btn2)
+
+        self.layout.addStretch()
+        self.layout.setSpacing(20)
+
+        return self.layout
 
     def close_popup(self):
         self.parent().close()
