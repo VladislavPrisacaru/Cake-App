@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox
+from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame
 from PySide6.QtCore import Qt
 from Database import DatabaseManager  # keep this if used elsewhere
 from Animations import fade_in_animation  # optional
@@ -8,9 +8,16 @@ class IngredientsWidget(QWidget):
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
 
-        self.main_layout = QVBoxLayout()
+        self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
         self.add_btn()
+
+        self.overlay = QWidget(self)
+        self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 0.5);")
+        self.overlay.hide()
+
+        self.modal_widget = GetIngredients(self)
+        self.modal_widget.hide()
 
     def add_btn(self):
         layout = QHBoxLayout()
@@ -30,105 +37,101 @@ class IngredientsWidget(QWidget):
         self.main_layout.addLayout(layout)
         self.main_layout.setAlignment(Qt.AlignTop)
 
-        add_btn.clicked.connect(self.set_ingredient_info)
+        add_btn.clicked.connect(self.show_modal)
 
-    def set_ingredient_info(self):
-        self.modal_widget = ModalWidget(self)
-        self.modal_widget.raise_()  # Ensure the modal is on top
-        self.modal_widget.show()
-        # fade_in_animation(self.modal_widget)
-
-
-class ModalWidget(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setGeometry(parent.rect())
-
-        self.overlay = QWidget(self)
-        self.overlay.setGeometry(self.rect())
-        self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 70);")
-        self.overlay.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+    def show_modal(self):
+        self.overlay.setGeometry(0, 0, self.width(), self.height())
         self.overlay.show()
+        self.overlay.raise_()
 
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.modal_widget.setGeometry(
+            (self.width() - self.modal_widget.width()) // 2,
+            (self.height() - self.modal_widget.height()) // 2,
+            self.modal_widget.width(),
+            self.modal_widget.height()
+        )
+        self.modal_widget.show()
+        self.modal_widget.raise_()
 
-        layout = QVBoxLayout(self)
-        layout.setAlignment(Qt.AlignCenter)
+    def hide_modal(self):
+        self.overlay.hide()
+        self.modal_widget.hide()
 
-        self.pop_up = GetIngredients(self)
-          
-        self.pop_up.setMinimumSize(500, 700)
-        layout.addStretch()  
-        layout.addWidget(self.pop_up)
-        layout.addStretch() 
+    def resizeEvent(self, event):
+        """Handle window resizing to keep overlay and modal properly positioned"""
+        if self.overlay.isVisible():
+            self.overlay.setGeometry(0, 0, self.width(), self.height())
+            self.modal_widget.move(
+                self.width() // 2 - self.modal_widget.width() // 2,
+                self.height() // 2 - self.modal_widget.height() // 2
+            )
+        super().resizeEvent(event)
+    
 
-        self.setLayout(layout)
-
-
-    def center_widget(self):
-        parent_rect = self.parent().rect()
-        widget_rect = self.rect()
-        x = parent_rect.x() + (parent_rect.width() - widget_rect.width()) // 2
-        y = parent_rect.y() + (parent_rect.height() - widget_rect.height()) // 2
-        self.move(x, y)
-
-
-class GetIngredients(QWidget):
+class GetIngredients(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
-
         self.setStyleSheet("background-color: lightgray; border-radius: 7px;")
-        main_widget = QWidget(self)
         layout = self.initUI()
-        main_widget.setLayout(layout)
+        self.setLayout(layout)
+        self.adjustSize()
 
     def initUI(self):
-        self.layout = QVBoxLayout()
+        self.layout = QVBoxLayout(self)
 
         label = QLabel("Add Ingredients")
         label.setStyleSheet("color: black; font-size: 30px;")
-        label.setAlignment(Qt.AlignCenter | Qt.AlignTop)
+        label.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(label)
 
-        ing_name_label = QLabel("Ingredient Name:")
-        ing_name_label.setStyleSheet("color: black; font-size: 16px;")
-        self.layout.addWidget(ing_name_label)
+        self.ing_name, _  = self.create_labeled_input("Ingredient Name:")
+        self.ing_weight, self.ing_weight_unit = self.create_labeled_input("Ingredient Weight:", ["g", "kg", "ml", "l", "oz", "lb"])
+        self.ing_price, self.ing_price_unit = self.create_labeled_input("Ingredient Price:", ["£", "€", "$"])
 
-        ing_name_line = QLineEdit()
-        ing_name_line.setStyleSheet("background-color: white; color: black;")
-        self.layout.addWidget(ing_name_line)
-
-        h_layout_1 = QHBoxLayout()
-        ing_type_label = QLabel("Ingredient Weight:")
-        ing_type_label.setStyleSheet("color: black; font-size: 16px;")
-        h_layout_1.addWidget(ing_type_label)
+        buttons_layout = QHBoxLayout()
+        cancel_btn = QPushButton("Cancel")
+        cancel_btn.setStyleSheet(
+            "QPushButton {background-color: #07394B; color: white; font-size: 14px; border: none; padding: 10px; border-radius: 20px;}"         
+            "QPushButton:hover { background-color: #0D4A62 }"
+            "QPushButton:pressed { background-color: #052B38 }" )
         
-        ing_type_combo = QComboBox()
-        ing_type_combo.addItems(["g", "kg", "l", "lb", "oz"])
-        ing_type_combo.setStyleSheet("background-color: white; color: black;")
-        h_layout_1.addWidget(ing_type_combo)
-        self.layout.addLayout(h_layout_1)
+        save_btn = QPushButton("Save")
+        save_btn.setStyleSheet(
+            "QPushButton {background-color: #07394B; color: white; font-size: 14px; border: none; padding: 10px; border-radius: 20px;}"         
+            "QPushButton:hover { background-color: #0D4A62 }"
+            "QPushButton:pressed { background-color: #052B38 }" )
+        
+        buttons_layout.addWidget(cancel_btn)
+        buttons_layout.addWidget(save_btn)
+        self.layout.addLayout(buttons_layout)
 
-        h_layout_2 = QHBoxLayout()
-        ing_price_label = QLabel("Ingredient Price:")
-        ing_price_label.setStyleSheet("color: black; font-size: 16px;")
-        h_layout_2.addWidget(ing_price_label)
-
-        ing_price_combo = QComboBox()
-        ing_price_combo.addItems([ "£", "€", "$"])
-        ing_price_combo.setStyleSheet("background-color: white; color: black;")
-        h_layout_2.addWidget(ing_price_combo)
-        self.layout.addLayout(h_layout_2)
-
-        save_btn2 = QPushButton("Save")
-        save_btn2.setStyleSheet("background-color: white; color: black;")
-        save_btn2.clicked.connect(self.close_popup)
-        self.layout.addWidget(save_btn2)
-
-        self.layout.addStretch()
-        self.layout.setSpacing(20)
+        self.layout.setSpacing(10)
 
         return self.layout
+    
+    def create_labeled_input(self, label_text, combo_items=None):
+        layout = QVBoxLayout()
+        
+        label = QLabel(label_text)
+        label.setStyleSheet("color: black; font-size: 16px;")
+        layout.addWidget(label)
+
+        input_layout = QHBoxLayout()
+        line_edit = QLineEdit()
+        line_edit.setStyleSheet("background-color: white; color: black;")
+        input_layout.addWidget(line_edit)
+
+        combo_box = None
+        if combo_items:
+            combo_box = QComboBox()
+            combo_box.addItems(combo_items)
+            combo_box.setStyleSheet("background-color: white; color: black;")
+            input_layout.addWidget(combo_box)
+
+        layout.addLayout(input_layout)
+        self.layout.addLayout(layout)
+
+        return line_edit, combo_box
 
     def close_popup(self):
-        self.parent().close()
+        self.parent().hide_modal()
