@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGraphicsDropShadowEffect
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QIntValidator
 from Database import DatabaseManager
 from Animations import fade_in_animation
 
@@ -85,7 +86,7 @@ class GetIngredients(QFrame):
         label.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(label)
 
-        self.ing_name, _  = self.create_labeled_input("Ingredient Name:")
+        self.ing_name, _  = self.create_labeled_input("Ingredient Name:", place_holder_text="e.g. Flour, Sugar, etc.")
         self.ing_weight, self.ing_weight_unit = self.create_labeled_input("Ingredient Weight:", ["g", "kg", "ml", "l", "oz", "lb"])
         self.ing_price, self.ing_price_unit = self.create_labeled_input("Ingredient Price:", ["£", "€", "$"])
 
@@ -104,7 +105,7 @@ class GetIngredients(QFrame):
 
         return self.layout
     
-    def create_labeled_input(self, label_text, combo_items=None):
+    def create_labeled_input(self, label_text, combo_items=None, place_holder_text=None):
         layout = QVBoxLayout()
         
         label = QLabel(label_text)
@@ -113,6 +114,9 @@ class GetIngredients(QFrame):
 
         input_layout = QHBoxLayout()
         line_edit = QLineEdit()
+        line_edit.setPlaceholderText(place_holder_text)
+        line_edit.setMaxLength(25)
+        line_edit.setValidator(QIntValidator(0, 9999, self))
         line_edit.setStyleSheet("background-color: white; color: black;")
         input_layout.addWidget(line_edit)
 
@@ -120,7 +124,7 @@ class GetIngredients(QFrame):
         if combo_items:
             combo_box = QComboBox()
             combo_box.addItems(combo_items)
-            combo_box.setStyleSheet("background-color: white; color: black;")
+            combo_box.setStyleSheet("background-color: white; color: black; font-size: 13px;")
             input_layout.addWidget(combo_box)
 
         layout.addLayout(input_layout)
