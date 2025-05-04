@@ -27,7 +27,7 @@ class Sidebar(QFrame):
         self.active_btn = False
 
         self.layout.addStretch()
-        self.layout.setSpacing(15)
+        self.layout.setSpacing(10)
         self.layout.setContentsMargins(0, 15, 0, 0)
 
     def create_button(self, text):

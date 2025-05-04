@@ -9,9 +9,10 @@ def fade_in_animation(widget, duration=300):
     fade_animation.setDuration(duration)
     fade_animation.setStartValue(0)
     fade_animation.setEndValue(1)
-    fade_animation.setEasingCurve(QEasingCurve.InOutQuad)  # <-- Simpler in PySide6
+    fade_animation.setEasingCurve(QEasingCurve.InOutQuad)  
 
     fade_animation.start()
     widget._fade_animation = fade_animation  # Keep reference alive so it doesn’t die like your motivation on Monday
-
     widget.show()
+
+    return fade_animation  # Return the animation object if you need to control it later

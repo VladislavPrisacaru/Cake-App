@@ -1,7 +1,7 @@
-from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame
+from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGraphicsDropShadowEffect
 from PySide6.QtCore import Qt
-from Database import DatabaseManager  # keep this if used elsewhere
-from Animations import fade_in_animation  # optional
+from Database import DatabaseManager
+from Animations import fade_in_animation
 
 class IngredientsWidget(QWidget):
     def __init__(self, parent=None):
@@ -71,16 +71,17 @@ class IngredientsWidget(QWidget):
 class GetIngredients(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setStyleSheet("background-color: lightgray; border-radius: 7px;")
+        self.setStyleSheet("background-color: lightgray; border-radius: 10px; padding: 4px;")
         layout = self.initUI()
         self.setLayout(layout)
         self.adjustSize()
+        self.set_style()
 
     def initUI(self):
         self.layout = QVBoxLayout(self)
 
-        label = QLabel("Add Ingredients")
-        label.setStyleSheet("color: black; font-size: 30px;")
+        label = QLabel("Add Ingredient")
+        label.setStyleSheet("color: black; font-size: 35px;")
         label.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(label)
 
@@ -90,16 +91,7 @@ class GetIngredients(QFrame):
 
         buttons_layout = QHBoxLayout()
         cancel_btn = QPushButton("Cancel")
-        cancel_btn.setStyleSheet(
-            "QPushButton {background-color: #07394B; color: white; font-size: 14px; border: none; padding: 10px; border-radius: 20px;}"         
-            "QPushButton:hover { background-color: #0D4A62 }"
-            "QPushButton:pressed { background-color: #052B38 }" )
-        
         save_btn = QPushButton("Save")
-        save_btn.setStyleSheet(
-            "QPushButton {background-color: #07394B; color: white; font-size: 14px; border: none; padding: 10px; border-radius: 20px;}"         
-            "QPushButton:hover { background-color: #0D4A62 }"
-            "QPushButton:pressed { background-color: #052B38 }" )
         
         buttons_layout.addWidget(cancel_btn)
         buttons_layout.addWidget(save_btn)
@@ -107,13 +99,16 @@ class GetIngredients(QFrame):
 
         self.layout.setSpacing(10)
 
+        cancel_btn.clicked.connect(self.cancel_event)
+        #save_btn.clicked.connect(self.save_event)
+
         return self.layout
     
     def create_labeled_input(self, label_text, combo_items=None):
         layout = QVBoxLayout()
         
         label = QLabel(label_text)
-        label.setStyleSheet("color: black; font-size: 16px;")
+        label.setStyleSheet("color: black; font-size: 20px;")
         layout.addWidget(label)
 
         input_layout = QHBoxLayout()
@@ -133,5 +128,35 @@ class GetIngredients(QFrame):
 
         return line_edit, combo_box
 
-    def close_popup(self):
+    def cancel_event(self): 
+        self.ing_weight.setText("")
+        self.ing_price.setText("")
+        self.ing_name.setText("")
+        self.ing_weight_unit.setCurrentIndex(0)
+        self.ing_price_unit.setCurrentIndex(0)
         self.parent().hide_modal()
+
+    def set_style(self):
+        self.setStyleSheet("""
+            QFrame {
+                background-color: lightgray;
+                border-radius: 8px;
+                padding: 4px;
+            }
+                                   
+            QLineEdit {
+                padding: 1px;
+            
+                border-radius: 4px;
+                font-size: 14px;
+            }
+            QLineEdit:focus {
+                border: 1px solid #07394B;
+            }
+                        
+            
+            QPushButton {background-color: #07394B; color: white; font-size: 18px; border: none; padding: 4px; border-radius: 15px;}      
+            QPushButton:hover { background-color: #0D4A62 }
+            QPushButton:pressed { background-color: #052B38 }
+                           
+        """)
