@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGraphicsDropShadowEffect
+from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGridLayout
 from PySide6.QtCore import Qt, QRegularExpression
 from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator
 from Database import DatabaseManager
@@ -47,9 +47,16 @@ class IngredientsWidget(QWidget):
 
     def load_ingredients(self):
         ingredients = db.get_all_ingredients()
-        for ingredient in ingredients:
-            ingredient = LoadIngredient(self, ingredient)
-            self.main_layout.addWidget(ingredient)
+
+        self.grid_layout = QGridLayout()
+        self.main_layout.addLayout(self.grid_layout)
+
+        for idx, ingredient in enumerate(ingredients):
+            idx = self.grid_layout.count() 
+            row = idx // 3
+            col = idx % 3
+            ingredient_widget = LoadIngredient(self, ingredient)
+            self.grid_layout.addWidget(ingredient_widget, row, col)
 
     def show_modal(self):
         self.overlay.setGeometry(0, 0, self.width(), self.height())
@@ -176,7 +183,7 @@ class GetIngredients(QFrame):
         ingredient = db.get_chosen_ingredient(name)
         if ingredient:
             ingredient = LoadIngredient(self.parent(), ingredient)
-            self.parent().main_layout.addWidget(ingredient)
+            self.parent().grid_layout.addWidget(ingredient)
 
         self.ing_weight.setText("")
         self.ing_price.setText("")
@@ -219,7 +226,7 @@ class LoadIngredient(QFrame):
         self.initUI()
 
     def initUI(self):
-        layout = QVBoxLayout(self)
+        layout = QHBoxLayout(self)
 
         if not self.ingredient:
             return
