@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import (QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGridLayout)
+from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGridLayout
 from PySide6.QtCore import Qt, QRegularExpression
 from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator
 from Database import DatabaseManager
@@ -18,6 +18,7 @@ class IngredientsWidget(QWidget):
         self.overlay = QWidget(self)
         self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 0.5);")
         self.overlay.hide()
+        
         
         self.modal_widget = GetIngredients(parent=self)
         self.modal_widget.hide()
@@ -56,7 +57,7 @@ class IngredientsWidget(QWidget):
             self.grid_layout = QGridLayout()
             self.main_layout.addLayout(self.grid_layout)
 
-        self.grid_layout.setSpacing(10)
+        self.grid_layout.setSpacing(5)
         ingredients = db.get_all_ingredients()
 
         for idx, ingredient in enumerate(ingredients):
@@ -66,6 +67,8 @@ class IngredientsWidget(QWidget):
             self.grid_layout.addWidget(ingredient_widget, row, col)
 
     def show_modal(self, mode="add", ingredient=None):
+        main_window = self.parent().parent()
+        self.overlay.setGeometry(0, 0, main_window.width(), main_window.height())
         self.overlay.show()
         self.overlay.raise_()
         
@@ -73,7 +76,7 @@ class IngredientsWidget(QWidget):
         self.modal_widget.set_mode(mode, ingredient)
         
         # Position and show the modal
-        self.modal_widget.adjustSize()
+        #self.modal_widget.adjustSize()
         self.modal_widget.setGeometry(
             (self.width() - self.modal_widget.width()) // 2,
             (self.height() - self.modal_widget.height()) // 2,
@@ -103,8 +106,6 @@ class GetIngredients(QFrame):
         self.initUI()
         self.adjustSize()
         self.set_style()
-        
-        
         
         # Set initial mode
         self.set_mode("add")
@@ -221,9 +222,8 @@ class GetIngredients(QFrame):
         if self.mode == "add":
             db.add_ingredient(name, weight, weight_unit, price, price_unit)
         elif self.mode == "edit" and self.current_ingredient:
-            # Update the existing ingredient
             old_name = self.current_ingredient[1]
-            db.update_ingredient(old_name, name, weight, weight_unit, price, price_unit)
+            db.update_ingredients(old_name, name, weight, weight_unit, price, price_unit)
 
         self.parent().load_ingredients()  # Refresh the list
         self.reset_inputs()
