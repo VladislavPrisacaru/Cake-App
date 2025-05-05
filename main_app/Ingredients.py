@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGraphicsDropShadowEffect
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QRegularExpression
 from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator
 from Database import DatabaseManager
 from Animations import fade_in_animation
@@ -129,7 +129,15 @@ class GetIngredients(QFrame):
         line_edit.setMaxLength(30)
 
 
-        line_edit.setValidator(QIntValidator(0, 9999, self))
+        if label_text == "Name":
+            regex = QRegularExpression("[a-zA-Z0-9 ]*")
+            validator = QRegularExpressionValidator(regex, self)
+            line_edit.setValidator(validator)
+        elif label_text == "Ingredient Weight:" or label_text == "Ingredient Price:":
+            validator = QDoubleValidator(0.0, 9999.99, 2, self)
+            validator.setNotation(QDoubleValidator.StandardNotation)
+            line_edit.setValidator(validator)
+
         line_edit.setStyleSheet("background-color: white; color: black;")
         input_layout.addWidget(line_edit)
 
