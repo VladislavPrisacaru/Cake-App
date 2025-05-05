@@ -49,6 +49,7 @@ A Python-based desktop application for calculating the cost of making cakes and 
 
 ## 👨‍💻 Author
 
+- Vladislav Prisacaru
 Built to improve Python, database, and GUI development skills.
 
 ---
