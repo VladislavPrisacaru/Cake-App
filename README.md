@@ -1,3 +1,58 @@
-# Cake-App
-Cake app to calculate price of making a cake and tracking recipes
-To download executable terminal version and use it out of the box go here > https://drive.google.com/file/d/1wmmj5-bn6ViDAVXRtwLqfamjhM5LxGS_/view?usp=drive_link
+# Cake App
+
+A Python-based desktop application for calculating the cost of making cakes and managing ingredient data.
+
+---
+
+## ⚙️ Features
+
+### Ingredient Management
+- **Add Ingredient**  
+  A modal widget allows users to input:
+  - Ingredient name
+  - Weight and unit selection
+  - Price and unit selection  
+  The ingredient is then saved to the database and displayed in a grid layout (3 per row).
+
+- **Edit/Delete Ingredient**  
+  Each ingredient can be clicked to bring up a modal with:
+  - Editable fields for name, weight, and price
+  - Options to save changes, delete, or cancel
+
+---
+
+## 🛠 Tech Stack
+
+- **Language**: Python  
+- **GUI**: PySide6  
+- **Database**: SQLite3
+
+---
+
+## 🚀 Installation
+
+> Terminal version (executable) available here:  
+[📦 Download Cake App Executable](https://drive.google.com/file/d/1wmmj5-bn6ViDAVXRtwLqfamjhM5LxGS_/view?usp=drive_link)
+
+> GUI version currently under development.
+
+---
+
+## 🔮 Upcoming Features
+
+- Recipe creation and tracking  
+- Cost analysis per recipe  
+- Ingredient usage statistics  
+- Improved UI design and flow
+
+---
+
+## 👨‍💻 Author
+
+Built to improve Python, database, and GUI development skills.
+
+---
+
+## 📄 License
+
+MIT License – Free to use and modify while i havent changed it
