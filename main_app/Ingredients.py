@@ -19,13 +19,13 @@ class IngredientsWidget(QWidget):
         self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 0.5);")
         self.overlay.hide()
         
-        
         self.modal_widget = GetIngredients(parent=self)
         self.modal_widget.hide()
 
         self.load_ingredients()
 
     def add_btn(self):
+        # add ingredient button at the top
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 5, 0, 10)
 
@@ -60,6 +60,7 @@ class IngredientsWidget(QWidget):
         self.grid_layout.setSpacing(5)
         ingredients = db.get_all_ingredients()
 
+        # 3 ingredients per row
         for idx, ingredient in enumerate(ingredients):
             row = idx // 3
             col = idx % 3
@@ -67,6 +68,7 @@ class IngredientsWidget(QWidget):
             self.grid_layout.addWidget(ingredient_widget, row, col)
 
     def show_modal(self, mode="add", ingredient=None):
+        # set the overlay to cover the entire main window
         main_window = self.parent().parent()
         self.overlay.setGeometry(0, 0, main_window.width(), main_window.height())
         self.overlay.show()
@@ -76,7 +78,6 @@ class IngredientsWidget(QWidget):
         self.modal_widget.set_mode(mode, ingredient)
         
         # Position and show the modal
-        #self.modal_widget.adjustSize()
         self.modal_widget.setGeometry(
             (self.width() - self.modal_widget.width()) // 2,
             (self.height() - self.modal_widget.height()) // 2,
@@ -87,6 +88,7 @@ class IngredientsWidget(QWidget):
         self.modal_widget.raise_()
 
     def hide_modal(self):
+        # Hide the overlay and modal widget
         self.overlay.hide()
         self.modal_widget.hide()
 
@@ -141,9 +143,9 @@ class GetIngredients(QFrame):
         self.ing_price, self.ing_price_unit = self.create_labeled_input("Ingredient Price:", ["£", "€", "$"])
 
         # Initialize buttons
-        self.cancel_btn = QPushButton("Cancel")
-        self.delete_btn = QPushButton("Delete")
         self.save_btn = QPushButton("Save")
+        self.delete_btn = QPushButton("Delete")
+        self.cancel_btn = QPushButton("Cancel")
         
         # Connect signals
         self.cancel_btn.clicked.connect(self.cancel_event)
@@ -152,15 +154,16 @@ class GetIngredients(QFrame):
 
         # Button layout
         self.buttons_layout = QHBoxLayout()
-        self.buttons_layout.addWidget(self.cancel_btn)
-        self.buttons_layout.addWidget(self.delete_btn)
         self.buttons_layout.addWidget(self.save_btn)
+        self.buttons_layout.addWidget(self.delete_btn)
+        self.buttons_layout.addWidget(self.cancel_btn)
         self.layout.addLayout(self.buttons_layout)
 
         self.layout.setSpacing(10)
         return self.layout
 
     def populate_inputs(self):
+        # populate the input fields with the current ingredient data
         if self.current_ingredient:
             date, name, weight, weight_unit, price, price_unit = self.current_ingredient
             self.ing_name.setText(name)
@@ -181,6 +184,7 @@ class GetIngredients(QFrame):
         line_edit.setPlaceholderText(place_holder_text)
         line_edit.setMaxLength(30)
 
+        # set validation
         if label_text == "Ingredient Name:":
             regex = QRegularExpression("[a-zA-Z0-9 ]*")
             validator = QRegularExpressionValidator(regex, self)
@@ -210,6 +214,7 @@ class GetIngredients(QFrame):
         self.parent().hide_modal()
 
     def save_event(self):
+        # get the ingredient values
         name = self.ing_name.text()
         weight = self.ing_weight.text()
         price = self.ing_price.text()
@@ -219,6 +224,7 @@ class GetIngredients(QFrame):
         if not name or not weight or not price:
             return
 
+        #save or update ingredient in the database based on mode
         if self.mode == "add":
             db.add_ingredient(name, weight, weight_unit, price, price_unit)
         elif self.mode == "edit" and self.current_ingredient:
@@ -286,6 +292,7 @@ class LoadIngredient(QFrame):
         self.initUI()
 
     def initUI(self):
+        # load ingredient object
         layout = QHBoxLayout(self)
 
         if not self.ingredient:
@@ -309,4 +316,5 @@ class LoadIngredient(QFrame):
         layout.addWidget(ingredient_btn)
         
         self.setLayout(layout)
+        #allow to edit or delete the existing ingredient
         ingredient_btn.clicked.connect(lambda: self.parent().show_modal("edit", self.ingredient))
