@@ -15,7 +15,9 @@ class DatabaseManager:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE,
             weight INTEGER NOT NULL,
+            weight_unit TEXT NOT NULL,
             price REAL NOT NULL,
+            price_unit TEXT NOT NULL,
             current_date TEXT NOT NULL
             );
         """)
@@ -31,12 +33,12 @@ class DatabaseManager:
             );""")
         self.connection.commit()
     
-    def add_ingredients(self, name, weight, price):
+    def add_ingredient(self, name, weight, weight_unit, price, price_unit):
         current_date = datetime.now().strftime("%Y-%m-%d")
         try:
             self.cursor.execute("""
-                INSERT INTO ingredients (name, weight, price, current_date)
-                VALUES (?, ?, ?, ?);""", (name, weight, price, current_date))
+                INSERT INTO ingredients (name, weight, weight_unit, price, price_unit, current_date)
+                VALUES (?, ?, ?, ?, ?, ?);""", (name, weight, weight_unit, price, price_unit, current_date))
             self.connection.commit()
             return True
         except sqlite3.IntegrityError:
@@ -53,17 +55,16 @@ class DatabaseManager:
         self.connection.commit()
         return self.cursor.rowcount > 0
     
-    def update_ingredients(self, name, weight, price):
+    def update_ingredients(self, name, weight, weight_unit, price, price_unit):
         self.cursor.execute(""" 
             UPDATE ingredients
-            SET weight = ?, price = ?
-            WHERE name = ?;""",
-            (weight, price, name))
+            SET weight = ?, weight_unit = ?, price = ?, price_unit = ?, WHERE name = ?;""",
+            (weight, weight_unit, price, price_unit, name))
         self.connection.commit()
         return self.cursor.rowcount > 0
     
     def get_all_ingredients(self):
-        self.cursor.execute("SELECT current_date, name, weight, price FROM  ingredients;")
+        self.cursor.execute("SELECT current_date, name, weight, weight_unit, price, price_unit FROM  ingredients;")
         return self.cursor.fetchall()
     
     def get_all_sales(self):
@@ -71,7 +72,7 @@ class DatabaseManager:
         return self.cursor.fetchall()
 
     def get_chosen_ingredient(self, name):
-        self.cursor.execute("SELECT weight, price FROM ingredients WHERE name = ?", (name,))
+        self.cursor.execute("SELECT current_date, name, weight, weight_unit, price, price_unit FROM ingredients WHERE name = ?", (name,))
         return self.cursor.fetchone()
     
     def clear_data(self):

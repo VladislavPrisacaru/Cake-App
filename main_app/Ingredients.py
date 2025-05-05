@@ -1,8 +1,10 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGraphicsDropShadowEffect
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QIntValidator
+from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator
 from Database import DatabaseManager
 from Animations import fade_in_animation
+
+db = DatabaseManager("cakeshop.db")
 
 class IngredientsWidget(QWidget):
     def __init__(self, parent=None):
@@ -19,6 +21,9 @@ class IngredientsWidget(QWidget):
 
         self.modal_widget = GetIngredients(self)
         self.modal_widget.hide()
+
+        self.load_ingredients()
+        #self.ingredient_list = LoadIngredient(self)
 
     def add_btn(self):
         layout = QHBoxLayout()
@@ -39,6 +44,12 @@ class IngredientsWidget(QWidget):
         self.main_layout.setAlignment(Qt.AlignTop)
 
         add_btn.clicked.connect(self.show_modal)
+
+    def load_ingredients(self):
+        ingredients = db.get_all_ingredients()
+        for ingredient in ingredients:
+            ingredient = LoadIngredient(self, ingredient)
+            self.main_layout.addWidget(ingredient)
 
     def show_modal(self):
         self.overlay.setGeometry(0, 0, self.width(), self.height())
@@ -82,7 +93,7 @@ class GetIngredients(QFrame):
         self.layout = QVBoxLayout(self)
 
         label = QLabel("Add Ingredient")
-        label.setStyleSheet("color: black; font-size: 35px;")
+        label.setStyleSheet("color: black; font-size: 30px; font-weight: bold;")
         label.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(label)
 
@@ -101,7 +112,7 @@ class GetIngredients(QFrame):
         self.layout.setSpacing(10)
 
         cancel_btn.clicked.connect(self.cancel_event)
-        #save_btn.clicked.connect(self.save_event)
+        save_btn.clicked.connect(self.save_event)
 
         return self.layout
     
@@ -115,7 +126,9 @@ class GetIngredients(QFrame):
         input_layout = QHBoxLayout()
         line_edit = QLineEdit()
         line_edit.setPlaceholderText(place_holder_text)
-        line_edit.setMaxLength(25)
+        line_edit.setMaxLength(30)
+
+
         line_edit.setValidator(QIntValidator(0, 9999, self))
         line_edit.setStyleSheet("background-color: white; color: black;")
         input_layout.addWidget(line_edit)
@@ -138,6 +151,31 @@ class GetIngredients(QFrame):
         self.ing_name.setText("")
         self.ing_weight_unit.setCurrentIndex(0)
         self.ing_price_unit.setCurrentIndex(0)
+        self.parent().hide_modal()
+
+    def save_event(self):
+        name = self.ing_name.text()
+        weight = self.ing_weight.text()
+        price = self.ing_price.text()
+        weight_unit = self.ing_weight_unit.currentText()
+        price_unit = self.ing_price_unit.currentText()
+
+        if not name or not weight or not price:
+            return
+
+        db.add_ingredient(name, weight, weight_unit, price, price_unit)
+
+        ingredient = db.get_chosen_ingredient(name)
+        if ingredient:
+            ingredient = LoadIngredient(self.parent(), ingredient)
+            self.parent().main_layout.addWidget(ingredient)
+
+        self.ing_weight.setText("")
+        self.ing_price.setText("")
+        self.ing_name.setText("")
+        self.ing_weight_unit.setCurrentIndex(0)
+        self.ing_price_unit.setCurrentIndex(0)
+        
         self.parent().hide_modal()
 
     def set_style(self):
@@ -164,3 +202,23 @@ class GetIngredients(QFrame):
             QPushButton:pressed { background-color: #052B38 }
                            
         """)
+
+class LoadIngredient(QFrame):
+    def __init__(self, parent=None, ingredient=None):
+        super().__init__(parent)
+        self.setStyleSheet("background-color: gray; border-radius: 10px; padding: 4px;")
+        self.ingredient = ingredient
+        self.initUI()
+
+    def initUI(self):
+        layout = QVBoxLayout(self)
+
+        if not self.ingredient:
+            return
+
+        date, name, weight, weight_unit, price, price_unit = self.ingredient
+        ingredient_label = QLabel(f"{name} - {weight} {weight_unit} - {price} {price_unit}")
+        ingredient_label.setStyleSheet("color: black; font-size: 20px;")
+        layout.addWidget(ingredient_label)
+        
+        self.setLayout(layout)
