@@ -20,7 +20,7 @@ class Sidebar(QFrame):
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.setMinimumWidth(240)
 
-        self.main_window = main_window
+        self.main_window = main_window # Reference to the main window class
         self.layout = QVBoxLayout(self)
 
         self.create_btns()
@@ -30,7 +30,7 @@ class Sidebar(QFrame):
         self.layout.setSpacing(10)
         self.layout.setContentsMargins(0, 15, 0, 0)
 
-    def create_button(self, text):
+    def create_button(self, text): # to create loads of buttons easy
         button = QPushButton(text, self)
         button.setFixedHeight(45)
         button.setStyleSheet(
@@ -40,13 +40,7 @@ class Sidebar(QFrame):
         self.layout.addWidget(button)
         return button
 
-    def get_screen_height(self):
-        screen = QApplication.primaryScreen()
-        screen_geometry = screen.availableGeometry()
-        self.screen_height = screen_geometry.height()
-        return self.screen_height
-
-    def create_btns(self):
+    def create_btns(self): # the menu buttons and its connections
         self.main_btn = self.create_button("Main")
         self.add_recipe_btn = self.create_button("Add Recipe")
         self.calc_btn = self.create_button("Calculate Recipe")
@@ -65,7 +59,7 @@ class Sidebar(QFrame):
         self.sales_btn.clicked.connect(lambda: self.set_active(self.sales_btn, "sales"))
         self.options_btn.clicked.connect(lambda: self.set_active(self.options_btn, "options"))
 
-    def set_active(self, btn, name):
+    def set_active(self, btn, name): # keep the active button highlighted and switch the window
         if self.active_btn:
             self.active_btn.setStyleSheet(
                 "QPushButton {background-color: transparent; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 15px;}"
@@ -95,7 +89,7 @@ class MainWindow(QMainWindow):
         main_layout.setSpacing(0)
 
         self.sidebar = Sidebar(self)
-        self.stacked_widget = QStackedWidget(self)
+        self.stacked_widget = QStackedWidget(self) # to store all the pages
 
         main_layout.addWidget(self.sidebar)
         main_layout.addWidget(self.stacked_widget)

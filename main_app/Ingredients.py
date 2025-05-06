@@ -15,7 +15,7 @@ class IngredientsWidget(QWidget):
         self.setLayout(self.main_layout)
         self.add_btn()
 
-        self.overlay = QWidget(self)
+        self.overlay = QWidget(self) # create an overlay widget
         self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 0.5);")
         self.overlay.hide()
         
@@ -27,7 +27,7 @@ class IngredientsWidget(QWidget):
     def add_btn(self):
         # add ingredient button at the top
         layout = QHBoxLayout()
-        layout.setContentsMargins(0, 5, 0, 10)
+        layout.setContentsMargins(0, 10, 0, 10)
 
         add_btn = QPushButton("Add Ingredient")
         add_btn.setMinimumWidth(500)
@@ -37,7 +37,7 @@ class IngredientsWidget(QWidget):
             "QPushButton:pressed { background-color: #052B38 }")
         add_btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
-        layout.addStretch()
+        layout.addStretch() # so its at teh center of the screen
         layout.addWidget(add_btn)
         layout.addStretch()
 
@@ -48,7 +48,7 @@ class IngredientsWidget(QWidget):
 
     def load_ingredients(self):
         # Clear existing widgets first
-        if hasattr(self, 'grid_layout'):
+        if hasattr(self, 'grid_layout'): # i think this repositions the items in the grid layout
             for i in reversed(range(self.grid_layout.count())): 
                 widget = self.grid_layout.itemAt(i).widget()
                 if widget:
@@ -77,7 +77,7 @@ class IngredientsWidget(QWidget):
         # Configure the existing modal widget based on mode
         self.modal_widget.set_mode(mode, ingredient)
         
-        # Position and show the modal
+        # Position and show the modal in the centre
         self.modal_widget.setGeometry(
             (self.width() - self.modal_widget.width()) // 2,
             (self.height() - self.modal_widget.height()) // 2,
@@ -92,7 +92,7 @@ class IngredientsWidget(QWidget):
         self.overlay.hide()
         self.modal_widget.hide()
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event): # resizes the overlay i guess
         if self.overlay.isVisible():
             self.overlay.setGeometry(0, 0, self.width(), self.height())
             self.modal_widget.move(
@@ -163,7 +163,7 @@ class GetIngredients(QFrame):
         return self.layout
 
     def populate_inputs(self):
-        # populate the input fields with the current ingredient data
+        # populate the input fields with the current ingredient data when in edit mode
         if self.current_ingredient:
             date, name, weight, weight_unit, price, price_unit = self.current_ingredient
             self.ing_name.setText(name)
@@ -172,7 +172,7 @@ class GetIngredients(QFrame):
             self.ing_price.setText(str(price))
             self.ing_price_unit.setCurrentText(price_unit)
     
-    def create_labeled_input(self, label_text, combo_items=None, place_holder_text=None):
+    def create_labeled_input(self, label_text, combo_items=None, place_holder_text=None): # to create the input fields label / line edit / combobox
         layout = QVBoxLayout()
         
         label = QLabel(label_text)
@@ -209,11 +209,11 @@ class GetIngredients(QFrame):
 
         return line_edit, combo_box
 
-    def cancel_event(self): 
+    def cancel_event(self): # the cancel button
         self.reset_inputs()
         self.parent().hide_modal()
 
-    def save_event(self):
+    def save_event(self): # the save button
         # get the ingredient values
         name = self.ing_name.text()
         weight = self.ing_weight.text()
