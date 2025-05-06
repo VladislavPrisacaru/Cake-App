@@ -229,7 +229,7 @@ class GetIngredients(QFrame):
             db.add_ingredient(name, weight, weight_unit, price, price_unit)
         elif self.mode == "edit" and self.current_ingredient:
             old_name = self.current_ingredient[1]
-            db.update_ingredients(old_name, name, weight, weight_unit, price, price_unit)
+            db.update_ingredient(old_name, name, weight, weight_unit, price, price_unit)
 
         self.parent().load_ingredients()  # Refresh the list
         self.reset_inputs()

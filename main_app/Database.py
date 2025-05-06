@@ -55,7 +55,7 @@ class DatabaseManager:
         self.connection.commit()
         return self.cursor.rowcount > 0
     
-    def update_ingredients(self, old_name, new_name, weight, weight_unit, price, price_unit):
+    def update_ingredient(self, old_name, new_name, weight, weight_unit, price, price_unit):
         self.cursor.execute(""" 
             UPDATE ingredients
             SET name = ?, weight = ?, weight_unit = ?, price = ?, price_unit = ? WHERE name = ?;""",
