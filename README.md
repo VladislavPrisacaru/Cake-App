@@ -50,10 +50,11 @@ A Python-based desktop application for calculating the cost of making cakes and 
 ## 👨‍💻 Author
 
 - Vladislav Prisacaru
+
 Built to improve Python, database, and GUI development skills.
 
 ---
 
 ## 📄 License
 
-MIT License – Free to use and modify while i havent changed it
+GNU GPL v3.0
