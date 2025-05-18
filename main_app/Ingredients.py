@@ -300,7 +300,7 @@ class LoadIngredient(QFrame):
 
         date, name, weight, weight_unit, price, price_unit = self.ingredient
         ingredient_btn = QPushButton(
-            f"{name}"
+            f"{name}\n"
             f"Weight: {weight} {weight_unit}\n"
             f"Price: {price_unit}{price}"
         )
