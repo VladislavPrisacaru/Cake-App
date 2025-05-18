@@ -10,7 +10,10 @@ from Recipes import RecipesWidget
 from AddSales import AddSalesWidget
 from Options import OptionsWidget
 from Animations import fade_in_animation
+from Database import DatabaseManager
 import sys
+
+db = DatabaseManager("cakeshop.db")
 
 class Sidebar(QFrame):
     def __init__(self, main_window):
@@ -75,12 +78,12 @@ class Sidebar(QFrame):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, db):
         super().__init__()
 
         self.setWindowTitle("Cake MD")
         self.setStyleSheet("background-color: lightgray;")
-
+        self.db = db
         main_widget = QWidget(self)
         self.setCentralWidget(main_widget)
         main_layout = QHBoxLayout(main_widget)
@@ -145,9 +148,13 @@ class MainWindow(QMainWindow):
 
         fade_in_animation(widget)
         self.stacked_widget.setCurrentWidget(widget)
+    
+    def closeEvent(self, event):
+        self.db.close_conn()
+        event.accept()
 
 
 app = QApplication(sys.argv)
-window = MainWindow()
+window = MainWindow(db)
 window.show()
 app.exec()

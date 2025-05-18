@@ -4,13 +4,11 @@ from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionVal
 from Database import DatabaseManager
 from Animations import fade_in_animation
 
-db = DatabaseManager("cakeshop.db")
-
 class IngredientsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-
+        self.db = parent.db
         self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
         self.add_btn()
@@ -58,7 +56,7 @@ class IngredientsWidget(QWidget):
             self.main_layout.addLayout(self.grid_layout)
 
         self.grid_layout.setSpacing(5)
-        ingredients = db.get_all_ingredients()
+        ingredients = self.db.get_all_ingredients()
 
         # 3 ingredients per row
         for idx, ingredient in enumerate(ingredients):
@@ -108,6 +106,8 @@ class GetIngredients(QFrame):
         self.initUI()
         self.adjustSize()
         self.set_style()
+
+        self.db = parent.db
         
         # Set initial mode
         self.set_mode("add")
@@ -226,10 +226,10 @@ class GetIngredients(QFrame):
 
         #save or update ingredient in the database based on mode
         if self.mode == "add":
-            db.add_ingredient(name, weight, weight_unit, price, price_unit)
+            self.db.add_ingredient(name, weight, weight_unit, price, price_unit)
         elif self.mode == "edit" and self.current_ingredient:
             old_name = self.current_ingredient[1]
-            db.update_ingredient(old_name, name, weight, weight_unit, price, price_unit)
+            self.db.update_ingredient(old_name, name, weight, weight_unit, price, price_unit)
 
         self.parent().load_ingredients()  # Refresh the list
         self.reset_inputs()
@@ -240,7 +240,7 @@ class GetIngredients(QFrame):
             return
 
         name = self.current_ingredient[1]
-        db.delete_ingredient(name)
+        self.db.delete_ingredient(name)
         self.parent().load_ingredients()  # Refresh the list
         self.reset_inputs()
         self.parent().hide_modal()
@@ -299,7 +299,11 @@ class LoadIngredient(QFrame):
             return
 
         date, name, weight, weight_unit, price, price_unit = self.ingredient
-        ingredient_btn = QPushButton(f"{name}\n{weight} {weight_unit} - {price} {price_unit}")
+        ingredient_btn = QPushButton(
+            f"{name}"
+            f"Weight: {weight} {weight_unit}\n"
+            f"Price: {price_unit}{price}"
+        )
         ingredient_btn.setStyleSheet("""
             QPushButton {
                 color: black; 
@@ -307,6 +311,7 @@ class LoadIngredient(QFrame):
                 background-color: white; 
                 border-radius: 8px; 
                 padding: 10px;
+                text-align: left;
             }
             QPushButton:hover {
                 background-color: #0D4A62;
