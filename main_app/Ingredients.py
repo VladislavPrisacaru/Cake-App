@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLa
 from PySide6.QtCore import Qt, QRegularExpression
 from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator
 from Database import DatabaseManager
-from Animations import fade_in_animation
+from Animations import fade_in_animation, AnimatedLabel
 
 class IngredientsWidget(QWidget):
     def __init__(self, parent=None):
@@ -11,6 +11,13 @@ class IngredientsWidget(QWidget):
         self.db = parent.db
         self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
+
+        label = QLabel("Ingredients Overview")
+        label.setStyleSheet("color: black; font-size: 25px;")
+
+        self.main_layout.addWidget(label, alignment=Qt.AlignCenter | Qt.AlignTop)
+        self.main_layout.setContentsMargins(0, 20, 0, 30)
+
         self.add_btn()
 
         self.overlay = QWidget(self) # create an overlay widget
@@ -299,27 +306,12 @@ class LoadIngredient(QFrame):
             return
 
         date, name, weight, weight_unit, price, price_unit = self.ingredient
-        ingredient_btn = QPushButton(
-            f"{name}\n"
-            f"Weight: {weight} {weight_unit}\n"
-            f"Price: {price_unit}{price}"
-        )
-        ingredient_btn.setStyleSheet("""
-            QPushButton {
-                color: black; 
-                font-size: 20px; 
-                background-color: white; 
-                border-radius: 8px; 
-                padding: 10px;
-                text-align: left;
-            }
-            QPushButton:hover {
-                background-color: #0D4A62;
-                color: white;
-            }
-        """)
+        ingredient_btn = AnimatedLabel((255, 255, 255),(13, 74, 98),(0, 0, 0),(255, 255, 255))
+        ingredient_btn.setText(f"<html><b>{name}</b><br>"
+                                f"Weight: {weight} {weight_unit}<br>"
+                                f"Price: {price_unit}{price}</html>")
         layout.addWidget(ingredient_btn)
         
         self.setLayout(layout)
         #allow to edit or delete the existing ingredient
-        ingredient_btn.clicked.connect(lambda: self.parent().show_modal("edit", self.ingredient))
+        ingredient_btn.mousePressEvent = lambda event: self.parent().show_modal("edit", self.ingredient)
