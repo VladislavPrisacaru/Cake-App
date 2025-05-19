@@ -1,10 +1,13 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGridLayout
 from PySide6.QtCore import Qt, QRegularExpression
 from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from Database import DatabaseManager
 from Animations import fade_in_animation, AnimatedLabel
 
-class IngredientsWidget(QWidget):
+class AddIngredientsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
@@ -32,7 +35,7 @@ class IngredientsWidget(QWidget):
     def add_btn(self):
         # add ingredient button at the top
         layout = QHBoxLayout()
-        layout.setContentsMargins(0, 10, 0, 10)
+        layout.setContentsMargins(0, 10, 0, 20)
 
         add_btn = QPushButton("Add Ingredient")
         add_btn.setMinimumWidth(500)

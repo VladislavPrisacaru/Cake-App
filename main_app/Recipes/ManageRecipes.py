@@ -3,14 +3,14 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
 
-class CalculateWidget(QWidget):
+class ManageRecipesWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__()
 
         self.setStyleSheet("background-color: lightgray;")
 
         layout = QHBoxLayout(self)
-        label = QLabel("Calculate Recipe")
+        label = QLabel("Recipes")
         label.setStyleSheet("color: black; font-size: 25px;")
         self.setLayout(layout)
 
