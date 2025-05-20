@@ -1,7 +1,7 @@
-from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, 
-    QFrame, QSizePolicy, QHBoxLayout, QStackedWidget, QLabel)
-import sys
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QFrame, QSizePolicy, QHBoxLayout, QStackedWidget, QLabel
+from PySide6.QtGui import QFontDatabase
+from PySide6.QtCore import Qt
+import sys, os
 from Animations import fade_in_animation
 from Database import DatabaseManager
 from Main.MainWidget import MainWidget
@@ -199,6 +199,12 @@ class MainWindow(QMainWindow):
         self.db.close_conn()
         event.accept()
 
+QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+
+# scaling
+os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1" # 100%
+os.environ["QT_SCALE_FACTOR"] = "1"
 
 app = QApplication(sys.argv)
 window = MainWindow(db)
