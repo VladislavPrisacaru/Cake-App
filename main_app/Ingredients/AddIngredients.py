@@ -132,6 +132,7 @@ class GetIngredients(QFrame):
             self.delete_btn.hide()
             self.save_btn.setText("Save")
             self.reset_inputs()
+
         elif mode == "edit":
             self.title_label.setText("Edit Ingredient")
             self.delete_btn.show()
@@ -211,7 +212,7 @@ class GetIngredients(QFrame):
         if combo_items:
             combo_box = QComboBox()
             combo_box.addItems(combo_items)
-            combo_box.setStyleSheet("background-color: white; color: black; font-size: 13px;")
+            combo_box.setStyleSheet("background-color: white; color: black; font-size: 15px;")
             input_layout.addWidget(combo_box)
 
         layout.addLayout(input_layout)
@@ -230,6 +231,8 @@ class GetIngredients(QFrame):
         price = self.ing_price.text()
         weight_unit = self.ing_weight_unit.currentText()
         price_unit = self.ing_price_unit.currentText()
+
+        name = name.title()
 
         if not name or not weight or not price:
             return
@@ -273,7 +276,7 @@ class GetIngredients(QFrame):
             QLineEdit {
                 padding: 1px;
                 border-radius: 4px;
-                font-size: 14px;
+                font-size: 18px;
             }
             QLineEdit:focus {
                 border: 1px solid #07394B;
@@ -282,7 +285,7 @@ class GetIngredients(QFrame):
             QPushButton {
                 background-color: #07394B; 
                 color: white; 
-                font-size: 18px; 
+                font-size: 20px; 
                 border: none; 
                 padding: 4px; 
                 border-radius: 15px;
@@ -313,6 +316,7 @@ class LoadIngredient(QFrame):
         ingredient_btn.setText(f"<html><b>{name}</b><br>"
                                 f"Weight: {weight} {weight_unit}<br>"
                                 f"Price: {price_unit}{price}</html>")
+        
         layout.addWidget(ingredient_btn)
         
         self.setLayout(layout)

@@ -35,23 +35,26 @@ class Sidebar(QFrame):
         self.layout.setSpacing(10)
         self.layout.setContentsMargins(0, 15, 0, 0)
 
-    def create_button(self, text): # to create loads of buttons easy
+    def create_button(self, text, indent=True): # to create loads of buttons easy
         button = QPushButton(text, self)
         button.setFixedHeight(45)
+
+        button.indent = "padding-left: 35px;" if indent else "padding-left: 14px;"
+
         button.setStyleSheet(
-            "QPushButton {background-color: transparent; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 35px;}"
-            "QPushButton:hover {background-color: #0D4A62}"
-            "QPushButton:pressed {background-color: #052B38}")
+            f"QPushButton {{background-color: transparent; color: white; font-size: 18px; border: none; text-align: left; {button.indent}}}"
+            f"QPushButton:hover {{background-color: #0D4A62}}"
+            f"QPushButton:pressed {{background-color: #052B38}}")
         self.layout.addWidget(button)
         return button
 
     def create_header(self, text):
         label = QLabel(text)
-        label.setStyleSheet("color: white; font-size: 18px; border: none; text-align: left; padding-left: 10px;")
+        label.setStyleSheet("color: white; font-size: 22px; border: none; text-align: left; padding-left: 10px; font-weight: bold;")
         self.layout.addWidget(label)
 
     def create_btns(self): # the menu buttons and its connections
-        self.main_btn = self.create_button("Main")
+        self.main_btn = self.create_button("Main", indent=False)
         self.main_btn.clicked.connect(lambda: self.set_active(self.main_btn, "main"))
 
         # --- Recipes ---
@@ -87,20 +90,21 @@ class Sidebar(QFrame):
         self.manage_stock_btn.clicked.connect(lambda: self.set_active(self.manage_stock_btn, "manage_stock"))
 
         # --- Options ---
-        self.options_btn = self.create_button("Options")
+        self.options_btn = self.create_button("Options", indent=False)
         self.options_btn.clicked.connect(lambda: self.set_active(self.options_btn, "options"))
 
-    def set_active(self, btn, name): # keep the active button highlighted and switch the window
+    def set_active(self, btn, name): # keep the active button highlighted and switch the window        
         if self.active_btn:
+            indent = self.active_btn.indent
             self.active_btn.setStyleSheet(
-                "QPushButton {background-color: transparent; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 35px;}"
+                f"QPushButton {{background-color: transparent; color: white; font-size: 18px; border: none; text-align: left; {indent}}}"
                 "QPushButton:hover {background-color: #0D4A62}"
                 "QPushButton:pressed {background-color: #052B38}")
-
+            
         self.active_btn = btn
         self.active_btn_name = name
         self.active_btn.setStyleSheet(
-            "QPushButton {background-color: #0D4A62; font-weight: bold; color: white; font-size: 16px; border: none; text-align: left; padding-left: 35px;}")
+            f"QPushButton {{background-color: #0D4A62; color: white; font-size: 18px; border: none; text-align: left; {btn.indent}}}")
 
         self.main_window.switch_window(name)
 
@@ -199,8 +203,8 @@ class MainWindow(QMainWindow):
         self.db.close_conn()
         event.accept()
 
-QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+#QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+#QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
 
 # scaling
 os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1" # 100%

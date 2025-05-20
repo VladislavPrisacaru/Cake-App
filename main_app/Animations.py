@@ -95,6 +95,7 @@ class AnimatedLabel(QLabel):
                 border-radius: 8px;
                 padding: 10px;
                 text-align: left;
+                border: 0px solid black;
             }}
             """
         )
