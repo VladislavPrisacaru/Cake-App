@@ -40,7 +40,7 @@ class AddIngredientsWidget(QWidget):
         add_btn = QPushButton("Add Ingredient")
         add_btn.setMinimumWidth(500)
         add_btn.setStyleSheet(
-            "QPushButton {background-color: #07394B; color: white; font-size: 16px; border: none; padding: 15px; border-radius: 25px;}"         
+            "QPushButton {background-color: #07394B; color: white; font-size: 20px; border: none; padding: 15px; border-radius: 25px;}"         
             "QPushButton:hover { background-color: #0D4A62 }"
             "QPushButton:pressed { background-color: #052B38 }")
         add_btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
@@ -100,19 +100,20 @@ class AddIngredientsWidget(QWidget):
         self.overlay.hide()
         self.modal_widget.hide()
 
-    def resizeEvent(self, event): # resizes the overlay i guess
-        if self.overlay.isVisible():
-            self.overlay.setGeometry(0, 0, self.width(), self.height())
-            self.modal_widget.move(
-                self.width() // 2 - self.modal_widget.width() // 2,
-                self.height() // 2 - self.modal_widget.height() // 2
-            )
-        super().resizeEvent(event)
+    # def resizeEvent(self, event): # resizes the overlay i guess
+    #     if self.overlay.isVisible():
+    #         self.overlay.setGeometry(0, 0, self.width(), self.height())
+    #         self.modal_widget.move(
+    #             self.width() // 2 - self.modal_widget.width() // 2,
+    #             self.height() // 2 - self.modal_widget.height() // 2
+    #         )
+    #     super().resizeEvent(event)
 
 class GetIngredients(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setStyleSheet("background-color: lightgray; border-radius: 10px; padding: 4px;")
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         self.initUI()
         self.adjustSize()
         self.set_style()
@@ -170,7 +171,9 @@ class GetIngredients(QFrame):
         self.buttons_layout.addWidget(self.cancel_btn)
         self.layout.addLayout(self.buttons_layout)
 
-        self.layout.setSpacing(10)
+        #self.layout.setSpacing(10)
+        self.setMinimumWidth(300)
+        
         return self.layout
 
     def populate_inputs(self):
@@ -289,6 +292,8 @@ class GetIngredients(QFrame):
                 border: none; 
                 padding: 4px; 
                 border-radius: 15px;
+                padding-left: 10px; 
+                padding-right: 10px;           
             }      
             QPushButton:hover { 
                 background-color: #0D4A62 

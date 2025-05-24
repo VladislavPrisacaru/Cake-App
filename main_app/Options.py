@@ -1,5 +1,4 @@
-from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout)
+from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
 
@@ -9,11 +8,13 @@ class OptionsWidget(QWidget):
 
         self.setStyleSheet("background-color: lightgray;")
 
-        layout = QHBoxLayout(self)
+        layout = QVBoxLayout(self)
         label = QLabel("Options")
-        label.setStyleSheet("color: black; font-size: 25px;")
+        self.setStyleSheet(" QLabel{color: black; font-size: 25px;}")
         self.setLayout(layout)
 
-        layout.addWidget(label, alignment=Qt.AlignCenter | Qt.AlignTop)
+        layout.addWidget(label)
         layout.setContentsMargins(0, 50, 0, 0)
-        
+        layout.addWidget(QLabel("Scale"))
+        layout.addWidget(QLabel("Theme"))
+        layout.addStretch()

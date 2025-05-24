@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QLabel, QWidget, QHBoxLayout
 from PySide6.QtCore import Qt
+import os
 
 class MainWidget(QWidget):
     def __init__(self, parent=None):
