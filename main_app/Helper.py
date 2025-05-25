@@ -9,7 +9,6 @@ class HelperClass:
         layout = QVBoxLayout()
         
         label = QLabel(label_text)
-        label.setStyleSheet("color: black; font-size: 20px;")
         layout.addWidget(label)
 
         input_layout = QHBoxLayout()
@@ -40,7 +39,7 @@ class HelperClass:
         layout.addLayout(input_layout)
         main_layout.addLayout(layout)
 
-        return line_edit, combo_box
+        return line_edit, combo_box, label
     
     class AnimatedLabel(QLabel):
         def __init__(self, start_bg, end_bg, start_text, end_text, *args, **kwargs):

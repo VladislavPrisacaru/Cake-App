@@ -141,9 +141,9 @@ class GetIngredients(QFrame):
         self.layout.addWidget(self.title_label)
 
         # Input fields
-        self.ing_name, _ = HelperClass.create_labeled_input("Ingredient Name:", self.layout, place_holder_text="e.g. Flour, Sugar, etc.")
-        self.ing_weight, self.ing_weight_unit = HelperClass.create_labeled_input("Ingredient Weight:", self.layout, ["g", "kg", "ml", "l", "oz", "lb"])
-        self.ing_price, self.ing_price_unit = HelperClass.create_labeled_input("Ingredient Price:", self.layout, ["£", "€", "$"])
+        self.ing_name, _, _ = HelperClass.create_labeled_input("Ingredient Name:", self.layout, place_holder_text="e.g. Flour, Sugar, etc.")
+        self.ing_weight, self.ing_weight_unit, _ = HelperClass.create_labeled_input("Ingredient Weight:", self.layout, ["g", "kg", "ml", "l", "oz", "lb"])
+        self.ing_price, self.ing_price_unit, _ = HelperClass.create_labeled_input("Ingredient Price:", self.layout, ["£", "€", "$"])
 
         # Initialize buttons
         self.save_btn = QPushButton("Save")
@@ -228,17 +228,15 @@ class GetIngredients(QFrame):
             QFrame {
                 background-color: lightgray;
                 border-radius: 8px;
-                padding: 1px;
-            }
+                padding: 1px;}
                                    
             QLineEdit {
                 padding: 1px;
                 border-radius: 4px;
-                font-size: 18px;
-            }
+                font-size: 18px;}
+                           
             QLineEdit:focus {
-                border: 1px solid #07394B;
-            }
+                border: 1px solid #07394B;}
                         
             QPushButton {
                 background-color: #07394B; 
@@ -248,14 +246,17 @@ class GetIngredients(QFrame):
                 padding: 4px; 
                 border-radius: 15px;
                 padding-left: 10px; 
-                padding-right: 10px;           
-            }      
+                padding-right: 10px;}
+                                 
             QPushButton:hover { 
-                background-color: #0D4A62 
-            }
+                background-color: #0D4A62}
+                           
             QPushButton:pressed { 
-                background-color: #052B38 
-            }
+                background-color: #052B38}
+                           
+            QLabel {
+                color: black; 
+                font-size: 20px;}
         """)
 
 class LoadIngredient(QFrame):
