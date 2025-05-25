@@ -125,11 +125,12 @@ class AddRecipeWidget(QWidget):
                 background-color: gray;}
             """)
 
-class IngredientBox(QFrame):
+class IngredientBox(QWidget):
     def __init__(self, parent=None):
         super().__init__()
         self.db = parent.db
         self.setMinimumSize(200, 400)
+        self.setStyleSheet("background-color: white; border: 2px solid #07394B;")
 
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)
@@ -164,6 +165,7 @@ class IngredientBox(QFrame):
 
         row_widget = QWidget()
         row_widget.setLayout(layout)
+        row_widget.setStyleSheet("border: None;")
 
         # Add to scroll layout
         self.scroll_layout.addWidget(row_widget)
@@ -177,14 +179,16 @@ class IngredientBox(QFrame):
             border-radius: 4px;
             font-size: 18px;
             color: black;
-            background-color: white;}
+            background-color: white;
+            border: None;}
                            
         QLineEdit:focus {
             border: 1px solid #07394B;}
         
         QLabel {
             color: black; 
-            font-size: 20px;}
+            font-size: 20px;
+            border: None;}
                            """)
 
         
