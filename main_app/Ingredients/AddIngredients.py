@@ -275,7 +275,7 @@ class LoadIngredient(QFrame):
         date, name, weight, weight_unit, price, price_unit = self.ingredient
         ingredient_btn = HelperClass.AnimatedLabel((255, 255, 255),(13, 74, 98),(0, 0, 0),(255, 255, 255))
         ingredient_btn.setText(f"<html><b>{name}</b><br>"
-                                f"Weight: {weight} {weight_unit}<br>"
+                                f"Weight: {weight}{weight_unit}<br>"
                                 f"Price: {price_unit}{price}</html>")
         
         layout.addWidget(ingredient_btn)
