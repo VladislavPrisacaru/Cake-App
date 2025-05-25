@@ -4,8 +4,8 @@ from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionVal
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from Database import DatabaseManager
-from Animations import fade_in_animation, AnimatedLabel
+from Helper import HelperClass
+
 
 class AddIngredientsWidget(QWidget):
     def __init__(self, parent=None):
@@ -100,15 +100,6 @@ class AddIngredientsWidget(QWidget):
         self.overlay.hide()
         self.modal_widget.hide()
 
-    # def resizeEvent(self, event): # resizes the overlay i guess
-    #     if self.overlay.isVisible():
-    #         self.overlay.setGeometry(0, 0, self.width(), self.height())
-    #         self.modal_widget.move(
-    #             self.width() // 2 - self.modal_widget.width() // 2,
-    #             self.height() // 2 - self.modal_widget.height() // 2
-    #         )
-    #     super().resizeEvent(event)
-
 class GetIngredients(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -150,9 +141,9 @@ class GetIngredients(QFrame):
         self.layout.addWidget(self.title_label)
 
         # Input fields
-        self.ing_name, _ = self.create_labeled_input("Ingredient Name:", place_holder_text="e.g. Flour, Sugar, etc.")
-        self.ing_weight, self.ing_weight_unit = self.create_labeled_input("Ingredient Weight:", ["g", "kg", "ml", "l", "oz", "lb"])
-        self.ing_price, self.ing_price_unit = self.create_labeled_input("Ingredient Price:", ["£", "€", "$"])
+        self.ing_name, _ = HelperClass.create_labeled_input("Ingredient Name:", self.layout, place_holder_text="e.g. Flour, Sugar, etc.")
+        self.ing_weight, self.ing_weight_unit = HelperClass.create_labeled_input("Ingredient Weight:", self.layout, ["g", "kg", "ml", "l", "oz", "lb"])
+        self.ing_price, self.ing_price_unit = HelperClass.create_labeled_input("Ingredient Price:", self.layout, ["£", "€", "$"])
 
         # Initialize buttons
         self.save_btn = QPushButton("Save")
@@ -171,8 +162,9 @@ class GetIngredients(QFrame):
         self.buttons_layout.addWidget(self.cancel_btn)
         self.layout.addLayout(self.buttons_layout)
 
-        #self.layout.setSpacing(10)
+        self.layout.setSpacing(10)
         self.setMinimumWidth(300)
+        self.setMinimumHeight(400)
         
         return self.layout
 
@@ -185,43 +177,6 @@ class GetIngredients(QFrame):
             self.ing_weight_unit.setCurrentText(weight_unit)
             self.ing_price.setText(str(price))
             self.ing_price_unit.setCurrentText(price_unit)
-    
-    def create_labeled_input(self, label_text, combo_items=None, place_holder_text=None): # to create the input fields label / line edit / combobox
-        layout = QVBoxLayout()
-        
-        label = QLabel(label_text)
-        label.setStyleSheet("color: black; font-size: 20px;")
-        layout.addWidget(label)
-
-        input_layout = QHBoxLayout()
-        line_edit = QLineEdit()
-        line_edit.setPlaceholderText(place_holder_text)
-        line_edit.setMaxLength(30)
-
-        # set validation
-        if label_text == "Ingredient Name:":
-            regex = QRegularExpression("[a-zA-Z0-9 ]*")
-            validator = QRegularExpressionValidator(regex, self)
-            line_edit.setValidator(validator)
-        elif label_text == "Ingredient Weight:" or label_text == "Ingredient Price:":
-            validator = QDoubleValidator(0.0, 9999.99, 2, self)
-            validator.setNotation(QDoubleValidator.StandardNotation)
-            line_edit.setValidator(validator)
-
-        line_edit.setStyleSheet("background-color: white; color: black;")
-        input_layout.addWidget(line_edit)
-
-        combo_box = None
-        if combo_items:
-            combo_box = QComboBox()
-            combo_box.addItems(combo_items)
-            combo_box.setStyleSheet("background-color: white; color: black; font-size: 15px;")
-            input_layout.addWidget(combo_box)
-
-        layout.addLayout(input_layout)
-        self.layout.addLayout(layout)
-
-        return line_edit, combo_box
 
     def cancel_event(self): # the cancel button
         self.reset_inputs()
@@ -273,7 +228,7 @@ class GetIngredients(QFrame):
             QFrame {
                 background-color: lightgray;
                 border-radius: 8px;
-                padding: 4px;
+                padding: 1px;
             }
                                    
             QLineEdit {
@@ -317,7 +272,7 @@ class LoadIngredient(QFrame):
             return
 
         date, name, weight, weight_unit, price, price_unit = self.ingredient
-        ingredient_btn = AnimatedLabel((255, 255, 255),(13, 74, 98),(0, 0, 0),(255, 255, 255))
+        ingredient_btn = HelperClass.AnimatedLabel((255, 255, 255),(13, 74, 98),(0, 0, 0),(255, 255, 255))
         ingredient_btn.setText(f"<html><b>{name}</b><br>"
                                 f"Weight: {weight} {weight_unit}<br>"
                                 f"Price: {price_unit}{price}</html>")

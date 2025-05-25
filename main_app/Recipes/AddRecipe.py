@@ -1,6 +1,10 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QWidget
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Helper import HelperClass
 
 class AddRecipeWidget(QWidget):
     def __init__(self, parent=None):
@@ -23,7 +27,9 @@ class AddRecipeWidget(QWidget):
         main_container = QWidget()
         layout = QVBoxLayout(main_container)
 
-        layout.addWidget(QLabel("Recipe Name"), alignment=Qt.AlignCenter | Qt.AlignTop)
+        layout.addWidget(QLabel("Recipe Name:"), alignment=Qt.AlignLeft | Qt.AlignTop)
+
+        self.recipe_name, _ = HelperClass.create_labeled_input("Recipe Name:", layout)
 
         return main_container
 
