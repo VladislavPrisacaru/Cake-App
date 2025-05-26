@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QWidget, QScrollArea, QFrame, QMenu, QWidgetAction, QLineEdit, QComboBox
+from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QScrollArea, QFrame, QMenu, QWidgetAction, QLineEdit, QComboBox, QSizePolicy
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
 import sys
@@ -88,9 +88,6 @@ class AddRecipeWidget(QWidget):
 
         # Show the menu
         menu.exec_(self.add_existing.mapToGlobal(self.add_existing.rect().bottomLeft()))
-    
-    def include_ingredient(self, name):
-        pass
 
     def set_style(self):
         self.setStyleSheet("""
@@ -125,71 +122,131 @@ class AddRecipeWidget(QWidget):
                 background-color: gray;}
             """)
 
-class IngredientBox(QWidget):
+class IngredientBox(QScrollArea):
     def __init__(self, parent=None):
         super().__init__()
         self.db = parent.db
         self.setMinimumSize(200, 400)
-        self.setStyleSheet("background-color: white; border: 2px solid #07394B;")
+        
+        self.setWidgetResizable(True)
 
-        self.scroll_area = QScrollArea(self)
-        self.scroll_area.setWidgetResizable(True)
-
-        self.scroll_widget = QWidget()
-        self.scroll_layout = QVBoxLayout(self.scroll_widget)
-        self.scroll_widget.setLayout(self.scroll_layout)
-
-        self.scroll_area.setWidget(self.scroll_widget)
-
-        # Final layout for this QFrame (to hold scroll area)
-        main_layout = QVBoxLayout()
-        main_layout.addWidget(self.scroll_area)
-        self.setLayout(main_layout)
+        self.content_widget = QWidget()
+        self.content_widget.setObjectName("contentWidget")
+        self.setWidget(self.content_widget)
+        
+        self.main_layout = QVBoxLayout(self.content_widget)
+        self.main_layout.setContentsMargins(5, 5, 5, 5)
+        self.main_layout.setSpacing(5)
+        self.main_layout.addStretch()
 
         self.set_style()
 
     def add_ingredient(self, name):
-        layout = QHBoxLayout()
-
+        # Get data from DB
         date, ing_name, weight, weight_u, price, price_u = self.db.get_chosen_ingredient(name)
-
-        layout.addWidget(QLabel(ing_name))
-
+        
+        row_widget = QWidget()
+        row_widget.setObjectName("rowWidget")
+        row_widget.setMaximumHeight(50)
+        
+        row_layout = QHBoxLayout(row_widget)
+        row_layout.setContentsMargins(10, 5, 10, 5)
+        row_layout.setSpacing(20)
+        
+        label = QLabel(ing_name)
+        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        row_layout.addWidget(label)
+        
         weight_edit = QLineEdit()
         weight_edit.setText(f"{weight}")
-        layout.addWidget(weight_edit)
-
+        weight_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        row_layout.addWidget(weight_edit)
+        
         weight_combo = QComboBox()
         weight_combo.addItems(["g", "kg", "ml", "l", "oz", "lb"])
-        layout.addWidget(weight_combo)
+        weight_combo.setStyleSheet("background-color: white; color: black; font-size: 18px;")
+        weight_combo.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        row_layout.addWidget(weight_combo)
+        
+        delete_btn = QPushButton("Delete")
+        delete_btn.setObjectName("deleteBtn")
+        delete_btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        row_layout.addWidget(delete_btn)
 
-        row_widget = QWidget()
-        row_widget.setLayout(layout)
-        row_widget.setStyleSheet("border: None;")
-
-        # Add to scroll layout
-        self.scroll_layout.addWidget(row_widget)
+        delete_btn.clicked.connect(lambda checked, r=row_widget: self.delete_row(r))
+        
+        # Add row widget to main layout
+        self.main_layout.insertWidget(0, row_widget)
+        
+    def delete_row(self, row):
+        row.deleteLater()
     
     def set_style(self):
-        self.setStyleSheet("""
-        QWidget {background-color: white; border: 2px solid #07394B;}
+        style = """            
+            QLineEdit {
+                padding: 3px;
+                border-radius: 4px;
+                font-size: 20px;
+                color: black;
+                background-color: white;
+                border: 1px solid #ccc;
+            }
             
-        QLineEdit {
-            padding: 1px;
-            border-radius: 4px;
-            font-size: 18px;
-            color: black;
-            background-color: white;
-            border: None;}
-                           
-        QLineEdit:focus {
-            border: 1px solid #07394B;}
-        
-        QLabel {
-            color: black; 
-            font-size: 20px;
-            border: None;}
-                           """)
+            QLineEdit:focus {
+                border: 1px solid #07394B;
+            }
+            
+            QLabel {
+                color: black; 
+                font-size: 20px;
+                border: None;
+                min-width: 100px;
+                background-color: white;
+                border-radius: 5px;
+                padding-left: 3px;
+            }
+            
+            QPushButton#deleteBtn {
+                background-color: #b80617;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                min-width: 60px;
+                border-radius: 5px;
+            }
+            
+            QPushButton#deleteBtn:pressed {
+                background-color: #9e0514;
+            }
+
+            QPushButton#deleteBtn:hover {
+                background-color: #cc0404;
+            }
+            
+            QComboBox {
+                padding: 3px;
+                font-size: 18px;
+                min-width: 60px;
+                color: black;
+                background-color: white;
+            }
+
+            QComboBox::drop-down {
+                color:black;
+            }
+            QScrollArea {
+                background-color: white;
+                border: 2px solid #07394B;
+            }
+            QWidget#contentWidget {
+                background-color: white;
+            }
+            QWidget#rowWidget {
+                background-color: lightgray;
+                border-radius: 5px;
+            }
+        """
+        self.setStyleSheet(style)
 
         
 
