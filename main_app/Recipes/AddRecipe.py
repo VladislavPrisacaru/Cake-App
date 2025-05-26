@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QScrollArea, QFrame, QMenu, QWidgetAction, QLineEdit, QComboBox, QSizePolicy
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QDoubleValidator
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -160,10 +160,14 @@ class IngredientBox(QScrollArea):
         weight_edit = QLineEdit()
         weight_edit.setText(f"{weight}")
         weight_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        validator = QDoubleValidator(0.0, 99999.99, 2)
+        validator.setNotation(QDoubleValidator.StandardNotation)
+        weight_edit.setValidator(validator)
         row_layout.addWidget(weight_edit)
         
         weight_combo = QComboBox()
         weight_combo.addItems(["g", "kg", "ml", "l", "oz", "lb"])
+        weight_combo.setCurrentText(weight_u)
         weight_combo.setStyleSheet("background-color: white; color: black; font-size: 18px;")
         weight_combo.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         row_layout.addWidget(weight_combo)
@@ -175,7 +179,6 @@ class IngredientBox(QScrollArea):
 
         delete_btn.clicked.connect(lambda checked, r=row_widget: self.delete_row(r))
         
-        # Add row widget to main layout
         self.main_layout.insertWidget(0, row_widget)
         
     def delete_row(self, row):

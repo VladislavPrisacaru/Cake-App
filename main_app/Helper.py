@@ -17,12 +17,12 @@ class HelperClass:
         line_edit.setMaxLength(30)
 
         # set validation
-        if label_text == "Ingredient Name:":
+        if "Name" in label_text:
             regex = QRegularExpression("[a-zA-Z0-9 ]*")
             validator = QRegularExpressionValidator(regex)
             line_edit.setValidator(validator)
         elif label_text == "Ingredient Weight:" or label_text == "Ingredient Price:":
-            validator = QDoubleValidator(0.0, 9999.99, 2)
+            validator = QDoubleValidator(0.0, 99999.99, 2)
             validator.setNotation(QDoubleValidator.StandardNotation)
             line_edit.setValidator(validator)
 
