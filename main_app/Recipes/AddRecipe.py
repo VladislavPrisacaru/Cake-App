@@ -38,6 +38,7 @@ class AddRecipeWidget(QWidget):
         self.recipe_name.setMaxLength(50)
         #layout.addWidget(QLabel("Ingredients:"))
 
+
         add_ingredient_layout = QHBoxLayout()
 
         self.add_new_ing = QPushButton("Add New Ingredient")
@@ -54,9 +55,46 @@ class AddRecipeWidget(QWidget):
 
         layout.addLayout(add_ingredient_layout)
 
+
         self.ingredient_box = IngredientBox(self)
         layout.addWidget(self.ingredient_box)
 
+
+        totals_layout = QHBoxLayout()
+        self.total_price = QLabel("Total Price:")
+        self.price = QLabel("0")
+        self.total_weight = QLabel("Total Weight:")
+        self.weight = QLabel("0")
+        self.total_price.setObjectName("totallabel")
+        self.total_weight.setObjectName("totallabel")
+        self.price.setObjectName("totallabel")
+        self.weight.setObjectName("totallabel")
+        
+        totals_layout.addWidget(self.total_price)
+        totals_layout.addWidget(self.price)
+        totals_layout.addStretch()
+        totals_layout.addWidget(self.total_weight)
+        totals_layout.addWidget(self.weight)
+        totals_layout.setContentsMargins(40,8,40,0)
+
+        layout.addLayout(totals_layout)
+
+
+        reset_save_layout = QHBoxLayout()
+
+        self.reset_btn = QPushButton("Reset Recipe")
+        self.save_btn = QPushButton("Save Recipe")
+
+        reset_save_layout.addWidget(self.reset_btn)
+        reset_save_layout.addWidget(self.save_btn)
+
+        self.save_btn.clicked.connect(self.save_recipe)
+        self.reset_btn.clicked.connect(self.reset_recipe)
+
+        reset_save_layout.setSpacing(100)
+        reset_save_layout.setContentsMargins(50, 20, 50, 20)
+
+        layout.addLayout(reset_save_layout)
 
         layout.setContentsMargins(200, 0, 200, 0)
         return main_container
@@ -130,12 +168,23 @@ class AddRecipeWidget(QWidget):
         self._parent.add_ingredients_window.load_ingredients()
         last_ing = self.db.get_last_ingredient()
         self.ingredient_box.add_ingredient(last_ing)
+    
+    def save_recipe(self):
+        pass
+
+    def reset_recipe(self):
+        pass
 
     def set_style(self):
         self.setStyleSheet("""
             QLabel {
                 color: black; 
                 font-size: 25px;}
+            
+            QLabel#totallabel {
+                color: black; 
+                font-size: 32px; 
+                padding: 6px;}
                            
             QLineEdit {
                 padding: 2px;
@@ -168,8 +217,9 @@ class AddRecipeWidget(QWidget):
 class IngredientBox(QScrollArea):
     def __init__(self, parent=None):
         super().__init__()
+        self._parent = parent
         self.db = parent.db
-        self.setMinimumSize(200, 400)
+        self.setMinimumSize(200, 500)
         
         self.setWidgetResizable(True)
 
@@ -207,6 +257,7 @@ class IngredientBox(QScrollArea):
         validator.setNotation(QDoubleValidator.StandardNotation)
         weight_edit.setValidator(validator)
         row_layout.addWidget(weight_edit)
+        weight_edit.textChanged.connect(self.calculate_totals)
         
         weight_combo = QComboBox()
         weight_combo.addItems(["g", "kg", "ml", "l", "oz", "lb"])
@@ -214,6 +265,7 @@ class IngredientBox(QScrollArea):
         weight_combo.setStyleSheet("background-color: white; color: black; font-size: 18px;")
         weight_combo.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         row_layout.addWidget(weight_combo)
+        weight_combo.currentTextChanged.connect(self.calculate_totals)
         
         delete_btn = QPushButton("Delete")
         delete_btn.setObjectName("deleteBtn")
@@ -223,9 +275,57 @@ class IngredientBox(QScrollArea):
         delete_btn.clicked.connect(lambda checked, r=row_widget: self.delete_row(r))
         
         self.main_layout.insertWidget(0, row_widget)
+
+        self.calculate_totals()
+
+    def calculate_totals(self):
+        current_price = 0
+        current_weight = 0
+
+        for i in range(self.main_layout.count() - 1):
+            row_widget = self.main_layout.itemAt(i).widget()
+            if row_widget is None:
+                continue 
+
+            name_lbl = row_widget.findChild(QLabel)
+            weight_edit = row_widget.findChild(QLineEdit)
+            unit_combo = row_widget.findChild(QComboBox)
+
+            name = name_lbl.text()
+            weight = float(weight_edit.text())
+            unit = unit_combo.currentText()
+
+            if unit == "kg" or unit == "l":
+                weight *= 1000
+            elif unit == "ml" or unit == "g":
+                weight *= 1
+            elif unit == "oz":
+                weight *= 28.3495
+            elif unit == "lb":
+                weight *= 453.592
+            
+            _, _, db_weight, db_weight_unit, db_price, db_price_unit = self.db.get_chosen_ingredient(name)
+
+            if db_weight_unit == "kg" or db_weight_unit == "l":
+                db_weight *= 1000
+            elif db_weight_unit == "ml" or db_weight_unit == "g":
+                db_weight *= 1
+            elif db_weight_unit == "oz":
+                db_weight *= 28.3495
+            elif db_weight_unit == "lb":
+                db_weight *= 453.592
+            
+            price_per_gram = db_price / db_weight
+            price_per_ingredient = price_per_gram * weight
+            current_price += price_per_ingredient
+            current_weight += weight
+
+        self._parent.price.setText(f"{current_price:.2f}")
+        self._parent.weight.setText(f"{current_weight}")
         
     def delete_row(self, row):
         row.deleteLater()
+        self.calculate_totals()
     
     def set_style(self):
         style = """            
