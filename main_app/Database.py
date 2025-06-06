@@ -75,6 +75,11 @@ class DatabaseManager:
         self.cursor.execute("SELECT current_date, name, weight, weight_unit, price, price_unit FROM ingredients WHERE name = ?", (name,))
         return self.cursor.fetchone()
     
+    def get_last_ingredient(self):
+        self.cursor.execute("SELECT name FROM ingredients ORDER BY id DESC LIMIT 1")
+        ing = self.cursor.fetchone()
+        return ing[0] if ing else None
+    
     def clear_data(self):
         self.cursor.execute("DELETE FROM ingredients")
         self.cursor.execute("DELETE FROM sales_data")

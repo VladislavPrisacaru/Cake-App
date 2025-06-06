@@ -5,9 +5,10 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from Helper import HelperClass
+from Ingredients.AddIngredients import GetIngredients, AddIngredientsWidget
 
 class AddRecipeWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, ing=None):
         super().__init__()
 
         self.setStyleSheet("background-color: lightgray;")
@@ -25,6 +26,8 @@ class AddRecipeWidget(QWidget):
         container = self.initUI()
         self.main_layout.addWidget(container, alignment=Qt.AlignTop)
         self.main_layout.addStretch()
+
+        self.add_new()
         self.set_style()
 
     def initUI(self):
@@ -33,17 +36,18 @@ class AddRecipeWidget(QWidget):
 
         self.recipe_name, _, self.label = HelperClass.create_labeled_input("Recipe Name:", layout)
         self.recipe_name.setMaxLength(50)
-        layout.addWidget(QLabel("Ingredients:"))
+        #layout.addWidget(QLabel("Ingredients:"))
 
         add_ingredient_layout = QHBoxLayout()
 
-        self.add_new = QPushButton("Add New Ingredient")
+        self.add_new_ing = QPushButton("Add New Ingredient")
         self.add_existing = QPushButton("Add Existing Ingredient")
 
-        add_ingredient_layout.addWidget(self.add_new)
+        add_ingredient_layout.addWidget(self.add_new_ing)
         add_ingredient_layout.addWidget(self.add_existing)
 
         self.add_existing.clicked.connect(self.existing_ingredients_selection)
+        self.add_new_ing.clicked.connect(lambda: self.show_modal("add"))
 
         add_ingredient_layout.setSpacing(100)
         add_ingredient_layout.setContentsMargins(50, 20, 50, 20)
@@ -88,6 +92,44 @@ class AddRecipeWidget(QWidget):
 
         # Show the menu
         menu.exec_(self.add_existing.mapToGlobal(self.add_existing.rect().bottomLeft()))
+    
+    def add_new(self):
+        self.overlay = QWidget(self) # create an overlay widget
+        self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 0.5);")
+        self.overlay.hide()
+        
+        self.modal_widget = GetIngredients(parent=self)
+        self.modal_widget.hide()
+
+    def show_modal(self, mode="add", ingredient=None):
+        # set the overlay to cover the entire main window
+        main_window = self.parent().parent()
+        self.overlay.setGeometry(0, 0, main_window.width(), main_window.height())
+        self.overlay.show()
+        self.overlay.raise_()
+        
+        # Configure the existing modal widget based on mode
+        self.modal_widget.set_mode(mode, ingredient)
+        
+        # Position and show the modal in the centre
+        self.modal_widget.setGeometry(
+            (self.width() - self.modal_widget.width()) // 2,
+            (self.height() - self.modal_widget.height()) // 2,
+            self.modal_widget.width(),
+            self.modal_widget.height()
+        )
+        self.modal_widget.show()
+        self.modal_widget.raise_()
+
+    def hide_modal(self):
+        # Hide the overlay and modal widget
+        self.overlay.hide()
+        self.modal_widget.hide() 
+    
+    def load_ingredients(self):
+        self._parent.add_ingredients_window.load_ingredients()
+        last_ing = self.db.get_last_ingredient()
+        self.ingredient_box.add_ingredient(last_ing)
 
     def set_style(self):
         self.setStyleSheet("""
@@ -113,10 +155,11 @@ class AddRecipeWidget(QWidget):
                 border-radius: 1px;}
             
             QMenu:item {
-                background-color: lightgray;
+                background-color: white;
                 font-size: 20px;
                 color: black;
-                padding: 5px;}
+                padding: 5px;
+                font-weight: bold}
                 
             QMenu:item:selected {
                 background-color: gray;}

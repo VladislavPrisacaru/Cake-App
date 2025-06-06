@@ -141,7 +141,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.main_page)
 
         # --- Recipes
-        self.add_recipe_window = AddRecipeWidget(self)
+        self.add_recipe_window = AddRecipeWidget(self, ing=AddIngredientsWidget)
         self.stacked_widget.addWidget(self.add_recipe_window)
 
         self.manage_recipe_window = ManageRecipesWidget(self)
