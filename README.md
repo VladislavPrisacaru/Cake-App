@@ -37,7 +37,7 @@ A Python-based desktop application for calculating the cost of making cakes and 
 > GUI version (executable) available here:    
 [📦 Download Cake App GUI](https://github.com/VladislavPrisacaru/Cake-App/releases/tag/v1.0.0/Cake-App.exe)
 
-- GUI version does the same thing as terminal version for now
+- GUI version does the same thing as terminal version for now.
 
 ---
 
