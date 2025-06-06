@@ -63,7 +63,7 @@ class AddRecipeWidget(QWidget):
         totals_layout = QHBoxLayout()
         self.total_price = QLabel("Total Price:")
         self.price = QLabel("0")
-        self.total_weight = QLabel("Total Weight:")
+        self.total_weight = QLabel("Raw Weight:")
         self.weight = QLabel("0")
         self.total_price.setObjectName("totallabel")
         self.total_weight.setObjectName("totallabel")
@@ -295,25 +295,11 @@ class IngredientBox(QScrollArea):
             weight = float(weight_edit.text())
             unit = unit_combo.currentText()
 
-            if unit == "kg" or unit == "l":
-                weight *= 1000
-            elif unit == "ml" or unit == "g":
-                weight *= 1
-            elif unit == "oz":
-                weight *= 28.3495
-            elif unit == "lb":
-                weight *= 453.592
+            weight = self.weight_to_grams(weight, unit)
             
             _, _, db_weight, db_weight_unit, db_price, db_price_unit = self.db.get_chosen_ingredient(name)
 
-            if db_weight_unit == "kg" or db_weight_unit == "l":
-                db_weight *= 1000
-            elif db_weight_unit == "ml" or db_weight_unit == "g":
-                db_weight *= 1
-            elif db_weight_unit == "oz":
-                db_weight *= 28.3495
-            elif db_weight_unit == "lb":
-                db_weight *= 453.592
+            db_weight = self.weight_to_grams(db_weight, db_weight_unit)
             
             price_per_gram = db_price / db_weight
             price_per_ingredient = price_per_gram * weight
@@ -322,6 +308,18 @@ class IngredientBox(QScrollArea):
 
         self._parent.price.setText(f"{current_price:.2f}")
         self._parent.weight.setText(f"{current_weight}")
+    
+    def weight_to_grams(self, weight, unit):
+        conversions = {
+            "kg": 1000,
+            "l": 1000,
+            "ml": 1,
+            "g": 1,
+            "oz": 28.3495,
+            "lb": 453.592
+        }
+
+        return weight * conversions.get(unit, 1)
         
     def delete_row(self, row):
         row.deleteLater()
@@ -389,15 +387,7 @@ class IngredientBox(QScrollArea):
             }
             QWidget#rowWidget {
                 background-color: lightgray;
-                border-radius: 5px;
+                border: 1px solid #07394B;
             }
         """
         self.setStyleSheet(style)
-
-        
-
-
-
-
-
-
