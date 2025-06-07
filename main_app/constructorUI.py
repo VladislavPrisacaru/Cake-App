@@ -209,7 +209,7 @@ class MainWindow(QMainWindow):
 # scaling
 os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1" # 100%
 os.environ["QT_SCALE_FACTOR"] = "1"
-os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
+#os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
 
 app = QApplication(sys.argv)
 window = MainWindow(db)
