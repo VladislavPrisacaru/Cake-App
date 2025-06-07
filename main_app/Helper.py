@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGridLayout
-from PySide6.QtCore import Qt, QRegularExpression, QEasingCurve, QPropertyAnimation, Property, QObject, Signal
+from PySide6.QtCore import Qt, QRegularExpression, QEasingCurve, QPropertyAnimation, Property, QObject, Signal, QEvent
 from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator, QColor
 
 
@@ -131,3 +131,23 @@ class Signals(QObject):
     ingredient_deleted = Signal()
 
 signals = Signals()
+
+
+class StickyCombo(QComboBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setEditable(True)
+        self.lineEdit().setReadOnly(True)
+        self.lineEdit().setAlignment(Qt.AlignCenter)
+        self.view().viewport().installEventFilter(self)
+
+    def eventFilter(self, obj, event):
+        if obj == self.view().viewport():
+            if event.type() == QEvent.MouseButtonRelease:
+                index = self.view().indexAt(event.pos())
+                if index.isValid():
+                    # Emit current text but DO NOT close popup
+                    self.setCurrentIndex(index.row())
+                    self.activated.emit(index.row())
+                return True  # block the default behavior (closing)
+        return super().eventFilter(obj, event)

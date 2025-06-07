@@ -1,10 +1,10 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QScrollArea, QFrame, QMenu, QWidgetAction, QLineEdit, QComboBox, QSizePolicy, QAbstractItemView
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QEvent
 from PySide6.QtGui import QIcon, QDoubleValidator
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from Helper import HelperClass, signals
+from Helper import HelperClass, signals, StickyCombo
 from Ingredients.AddIngredients import GetIngredients
 
 class AddRecipeWidget(QWidget):
@@ -102,25 +102,24 @@ class AddRecipeWidget(QWidget):
     def existing_ingredients_combo(self):
         ingredients = [name for _, name, *_ in self._parent.db.get_all_ingredients()]
         
-        self.ing_combo = QComboBox()
+        self.ing_combo = StickyCombo(self)
         self.ing_combo.addItems(ingredients)
         self.ing_combo.setMaxVisibleItems(10)
-
-        self.ing_combo.setEditable(True)
-        self.ing_combo.lineEdit().setReadOnly(True)
-        self.ing_combo.lineEdit().setAlignment(Qt.AlignCenter)
         self.ing_combo.setCurrentText("Add Existing Ingredient")
-
-        self.ing_combo.currentTextChanged.connect(self.handle_combo_selection)
 
         popup = self.ing_combo.view()
         popup.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
 
+        self.ing_combo.currentTextChanged.connect(self.handle_combo_selection)
+
         return self.ing_combo
 
     def handle_combo_selection(self, name):
-        self.ingredient_box.add_ingredient(name)
-        self.ing_combo.setCurrentText("Add Existing Ingredient")
+        if name and name != "Add Existing Ingredient":
+            self.ingredient_box.add_ingredient(name)
+            self.ing_combo.blockSignals(True)
+            self.ing_combo.setCurrentText("Add Existing Ingredient")
+            self.ing_combo.blockSignals(False)
     
     def add_new(self):
         self.overlay = QWidget(self) # create an overlay widget
@@ -157,9 +156,11 @@ class AddRecipeWidget(QWidget):
 
     def reload_ingredients(self):
         ingredients = [name for _, name, *_ in self._parent.db.get_all_ingredients()]
+        self.ing_combo.blockSignals(True)
         self.ing_combo.clear()
         self.ing_combo.addItems(ingredients)
         self.ing_combo.setCurrentText("Add Existing Ingredient")
+        self.ing_combo.blockSignals(False)
     
     def load_ingredients(self):
         self._parent.add_ingredients_window.load_ingredients()
@@ -213,7 +214,7 @@ class AddRecipeWidget(QWidget):
                 subcontrol-position: center right;
                 width: 20px;
                 height: 20px;
-                image: url(images_n_logos/white_arrow.png);
+                image: url(Recipes/white_arrow.png);
                 border: none;
                 padding-right: 8px;
             }
@@ -277,7 +278,6 @@ class IngredientBox(QScrollArea):
     def add_ingredient(self, name):
         # Get data from DB
         try:
-            print(name)
             date, ing_name, weight, weight_u, price, price_u = self.db.get_chosen_ingredient(name)
             
             row_widget = QWidget()
@@ -315,7 +315,6 @@ class IngredientBox(QScrollArea):
             row_layout.addWidget(delete_btn)
 
             delete_btn.clicked.connect(lambda checked, r=row_widget: self.delete_row(r))
-            self.calculate_totals()
 
             self.main_layout.insertWidget(0, row_widget)
 
@@ -328,7 +327,7 @@ class IngredientBox(QScrollArea):
         current_price = 0
         current_weight = 0
 
-        for i in range(self.main_layout.count() - 1):
+        for i in range(self.main_layout.count()):
             row_widget = self.main_layout.itemAt(i).widget()
             if row_widget is None:
                 continue 
@@ -368,6 +367,8 @@ class IngredientBox(QScrollArea):
         return weight * conversions.get(unit, 1)
         
     def delete_row(self, row):
+        self.main_layout.removeWidget(row)
+        row.setParent(None)
         row.deleteLater()
         self.calculate_totals()
     
