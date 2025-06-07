@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QScrollArea, QFrame, QMenu, QWidgetAction, QLineEdit, QComboBox, QSizePolicy
+from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QScrollArea, QFrame, QMenu, QWidgetAction, QLineEdit, QComboBox, QSizePolicy, QAbstractItemView
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QDoubleValidator
 import sys
@@ -110,6 +110,9 @@ class AddRecipeWidget(QWidget):
 
         ing_combo.currentTextChanged.connect(self.ingredient_box.add_ingredient)
 
+        popup = ing_combo.view()
+        popup.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
+
         return ing_combo
     
     def add_new(self):
@@ -209,7 +212,33 @@ class AddRecipeWidget(QWidget):
                 border-radius: 10px;
                 font-size: 20px;
                 padding: 5px;
-            }              
+            }        
+
+            QComboBox QAbstractItemView QScrollBar:vertical {
+                background: #07394B;
+                width: 12px;
+                margin: 0px;
+                border-radius: 10px;}   
+
+            QComboBox QAbstractItemView QScrollBar::handle:vertical {
+                background: #0D4A62; 
+                min-height: 20px;
+                border-radius: 8px;}
+                           
+            QComboBox QAbstractItemView QScrollBar::add-page:vertical,
+            QComboBox QAbstractItemView QScrollBar::sub-page:vertical {
+                height: 0px;
+                subcontrol-origin: margin;
+                subcontrol-position: top;  /* for add-line */
+                background: none;
+                border: none;
+            }
+                           
+            QComboBox QAbstractItemView::up-button, 
+            QComboBox QAbstractItemView::down-button {
+                /* Hide the scrollbar buttons completely */
+                width: 0px;
+                height: 0px;}
             """)
 
 class IngredientBox(QScrollArea):
