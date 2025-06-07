@@ -4,8 +4,8 @@ from PySide6.QtGui import QIcon, QDoubleValidator
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from Helper import HelperClass
-from Ingredients.AddIngredients import GetIngredients, AddIngredientsWidget
+from Helper import HelperClass, signals
+from Ingredients.AddIngredients import GetIngredients
 
 class AddRecipeWidget(QWidget):
     def __init__(self, parent=None, ing=None):
@@ -29,6 +29,9 @@ class AddRecipeWidget(QWidget):
 
         self.add_new()
         self.set_style()
+
+        signals.ingredient_added.connect(self.reload_ingredients)
+        signals.ingredient_deleted.connect(self.reload_ingredients)
 
     def initUI(self):
         main_container = QWidget()
@@ -97,23 +100,27 @@ class AddRecipeWidget(QWidget):
         return main_container
     
     def existing_ingredients_combo(self):
-        ingredients = []
-        for _, name, *_ in self._parent.db.get_all_ingredients():
-            ingredients.append(name)
+        ingredients = [name for _, name, *_ in self._parent.db.get_all_ingredients()]
         
-        ing_combo = QComboBox()
-        ing_combo.addItems(ingredients)
-        ing_combo.setMaxVisibleItems(10)
+        self.ing_combo = QComboBox()
+        self.ing_combo.addItems(ingredients)
+        self.ing_combo.setMaxVisibleItems(10)
 
-        ing_combo.setEditable(True)
-        ing_combo.setCurrentText("Add Existing Ingredient")
+        self.ing_combo.setEditable(True)
+        self.ing_combo.lineEdit().setReadOnly(True)
+        self.ing_combo.lineEdit().setAlignment(Qt.AlignCenter)
+        self.ing_combo.setCurrentText("Add Existing Ingredient")
 
-        ing_combo.currentTextChanged.connect(self.ingredient_box.add_ingredient)
+        self.ing_combo.currentTextChanged.connect(self.handle_combo_selection)
 
-        popup = ing_combo.view()
+        popup = self.ing_combo.view()
         popup.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
 
-        return ing_combo
+        return self.ing_combo
+
+    def handle_combo_selection(self, name):
+        self.ingredient_box.add_ingredient(name)
+        self.ing_combo.setCurrentText("Add Existing Ingredient")
     
     def add_new(self):
         self.overlay = QWidget(self) # create an overlay widget
@@ -147,6 +154,12 @@ class AddRecipeWidget(QWidget):
         # Hide the overlay and modal widget
         self.overlay.hide()
         self.modal_widget.hide() 
+
+    def reload_ingredients(self):
+        ingredients = [name for _, name, *_ in self._parent.db.get_all_ingredients()]
+        self.ing_combo.clear()
+        self.ing_combo.addItems(ingredients)
+        self.ing_combo.setCurrentText("Add Existing Ingredient")
     
     def load_ingredients(self):
         self._parent.add_ingredients_window.load_ingredients()
@@ -264,6 +277,7 @@ class IngredientBox(QScrollArea):
     def add_ingredient(self, name):
         # Get data from DB
         try:
+            print(name)
             date, ing_name, weight, weight_u, price, price_u = self.db.get_chosen_ingredient(name)
             
             row_widget = QWidget()

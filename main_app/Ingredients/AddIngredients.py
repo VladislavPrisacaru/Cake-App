@@ -1,11 +1,10 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGridLayout
-from PySide6.QtCore import Qt, QRegularExpression
+from PySide6.QtCore import Qt, QRegularExpression, Signal
 from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from Helper import HelperClass
-
+from Helper import HelperClass, signals
 
 class AddIngredientsWidget(QWidget):
     def __init__(self, parent=None):
@@ -205,6 +204,7 @@ class GetIngredients(QFrame):
         self.parent().load_ingredients()  # Refresh the list
         self.reset_inputs()
         self.parent().hide_modal()
+        signals.ingredient_added.emit()
 
     def delete_event(self):
         if not self.current_ingredient:
@@ -215,6 +215,7 @@ class GetIngredients(QFrame):
         self.parent().load_ingredients()  # Refresh the list
         self.reset_inputs()
         self.parent().hide_modal()
+        signals.ingredient_deleted.emit()
 
     def reset_inputs(self):
         self.ing_weight.setText("")

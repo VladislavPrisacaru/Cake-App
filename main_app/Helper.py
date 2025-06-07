@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGridLayout
-from PySide6.QtCore import Qt, QRegularExpression, QEasingCurve, QPropertyAnimation, Property
+from PySide6.QtCore import Qt, QRegularExpression, QEasingCurve, QPropertyAnimation, Property, QObject, Signal
 from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator, QColor
 
 
@@ -125,3 +125,9 @@ class HelperClass:
 
         bg_color = Property(QColor, get_bg_color, set_bg_color)
         text_color = Property(QColor, get_text_color, set_text_color)
+
+class Signals(QObject):
+    ingredient_added = Signal()
+    ingredient_deleted = Signal()
+
+signals = Signals()
