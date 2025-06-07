@@ -36,18 +36,17 @@ class AddRecipeWidget(QWidget):
 
         self.recipe_name, _, self.label = HelperClass.create_labeled_input("Recipe Name:", layout)
         self.recipe_name.setMaxLength(50)
-        #layout.addWidget(QLabel("Ingredients:"))
 
+        self.ingredient_box = IngredientBox(self)
 
         add_ingredient_layout = QHBoxLayout()
 
         self.add_new_ing = QPushButton("Add New Ingredient")
-        self.add_existing = QPushButton("Add Existing Ingredient")
+        self.add_existing = self.existing_ingredients_combo()
 
         add_ingredient_layout.addWidget(self.add_new_ing)
         add_ingredient_layout.addWidget(self.add_existing)
 
-        self.add_existing.clicked.connect(self.existing_ingredients_selection)
         self.add_new_ing.clicked.connect(lambda: self.show_modal("add"))
 
         add_ingredient_layout.setSpacing(100)
@@ -55,8 +54,6 @@ class AddRecipeWidget(QWidget):
 
         layout.addLayout(add_ingredient_layout)
 
-
-        self.ingredient_box = IngredientBox(self)
         layout.addWidget(self.ingredient_box)
 
 
@@ -99,37 +96,21 @@ class AddRecipeWidget(QWidget):
         layout.setContentsMargins(200, 0, 200, 0)
         return main_container
     
-    def existing_ingredients_selection(self):
-        menu = QMenu(self)
-
-        # Create a scrollable widget
-        scroll_widget = QWidget()
-        scroll_layout = QVBoxLayout(scroll_widget)
-
-        # Add your ingredient buttons/items
+    def existing_ingredients_combo(self):
+        ingredients = []
         for _, name, *_ in self._parent.db.get_all_ingredients():
-            btn = QPushButton(name)
-            btn.setStyleSheet("QPushButton {background-color: lightgray; font-size: 20px; color: black; padding: 5px;}"
-                              "QPushButton:hover {background-color: gray;}")
-            scroll_layout.addWidget(btn)
-            btn.clicked.connect(lambda checked, n=name: self.ingredient_box.add_ingredient(n))
+            ingredients.append(name)
+        
+        ing_combo = QComboBox()
+        ing_combo.addItems(ingredients)
+        ing_combo.setMaxVisibleItems(10)
 
-        scroll_layout.addStretch()
+        ing_combo.setEditable(True)
+        ing_combo.setCurrentText("Add Existing Ingredient")
 
-        # Scroll area setup
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setWidget(scroll_widget)
-        scroll_area.setMinimumWidth(100)
-        scroll_area.setMaximumHeight(300)  
+        ing_combo.currentTextChanged.connect(self.ingredient_box.add_ingredient)
 
-        # Add scroll area to QWidgetAction
-        scroll_action = QWidgetAction(menu)
-        scroll_action.setDefaultWidget(scroll_area)
-        menu.addAction(scroll_action)
-
-        # Show the menu
-        menu.exec_(self.add_existing.mapToGlobal(self.add_existing.rect().bottomLeft()))
+        return ing_combo
     
     def add_new(self):
         self.overlay = QWidget(self) # create an overlay widget
@@ -197,21 +178,38 @@ class AddRecipeWidget(QWidget):
             QPushButton {background-color: #07394B; color: white; font-size: 22px; border: none; padding: 7px; border-radius: 15px;}
             QPushButton:hover {background-color: #0D4A62}
             QPushButton:pressed {background-color: #052B38}
-                           
-            QMenu {
-                background-color: white;
-                padding: 5px;
-                border-radius: 1px;}
-            
-            QMenu:item {
-                background-color: white;
+
+            QComboBox {
+                background-color: #07394B;
+                color: white;
+                font-size: 22px;
+                border: none;
+                padding: 7px;
+                border-radius: 15px;
+            }
+
+            QComboBox:hover {
+                background-color: #0D4A62;
+            }
+
+            QComboBox::drop-down {
+                subcontrol-origin: padding;
+                subcontrol-position: center right;
+                width: 20px;
+                height: 20px;
+                image: url(images_n_logos/white_arrow.png);
+                border: none;
+                padding-right: 8px;
+            }
+
+            QComboBox QAbstractItemView {
+                background-color: #07394B;
+                color: white;
+                selection-background-color: #0D4A62;
+                border-radius: 10px;
                 font-size: 20px;
-                color: black;
                 padding: 5px;
-                font-weight: bold}
-                
-            QMenu:item:selected {
-                background-color: gray;}
+            }              
             """)
 
 class IngredientBox(QScrollArea):
@@ -236,47 +234,52 @@ class IngredientBox(QScrollArea):
 
     def add_ingredient(self, name):
         # Get data from DB
-        date, ing_name, weight, weight_u, price, price_u = self.db.get_chosen_ingredient(name)
-        
-        row_widget = QWidget()
-        row_widget.setObjectName("rowWidget")
-        row_widget.setMaximumHeight(50)
-        
-        row_layout = QHBoxLayout(row_widget)
-        row_layout.setContentsMargins(10, 5, 10, 5)
-        row_layout.setSpacing(20)
-        
-        label = QLabel(ing_name)
-        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        row_layout.addWidget(label)
-        
-        weight_edit = QLineEdit()
-        weight_edit.setText(f"{weight}")
-        weight_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        validator = QDoubleValidator(0.0, 99999.99, 2)
-        validator.setNotation(QDoubleValidator.StandardNotation)
-        weight_edit.setValidator(validator)
-        row_layout.addWidget(weight_edit)
-        weight_edit.textChanged.connect(self.calculate_totals)
-        
-        weight_combo = QComboBox()
-        weight_combo.addItems(["g", "kg", "ml", "l", "oz", "lb"])
-        weight_combo.setCurrentText(weight_u)
-        weight_combo.setStyleSheet("background-color: white; color: black; font-size: 18px;")
-        weight_combo.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        row_layout.addWidget(weight_combo)
-        weight_combo.currentTextChanged.connect(self.calculate_totals)
-        
-        delete_btn = QPushButton("Delete")
-        delete_btn.setObjectName("deleteBtn")
-        delete_btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        row_layout.addWidget(delete_btn)
+        try:
+            date, ing_name, weight, weight_u, price, price_u = self.db.get_chosen_ingredient(name)
+            
+            row_widget = QWidget()
+            row_widget.setObjectName("rowWidget")
+            row_widget.setMaximumHeight(50)
+            
+            row_layout = QHBoxLayout(row_widget)
+            row_layout.setContentsMargins(10, 5, 10, 5)
+            row_layout.setSpacing(20)
+            
+            label = QLabel(ing_name)
+            label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+            row_layout.addWidget(label)
+            
+            weight_edit = QLineEdit()
+            weight_edit.setText(f"{weight}")
+            weight_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            validator = QDoubleValidator(0.0, 99999.99, 2)
+            validator.setNotation(QDoubleValidator.StandardNotation)
+            weight_edit.setValidator(validator)
+            row_layout.addWidget(weight_edit)
+            weight_edit.textChanged.connect(self.calculate_totals)
+            
+            weight_combo = QComboBox()
+            weight_combo.addItems(["g", "kg", "ml", "l", "oz", "lb"])
+            weight_combo.setCurrentText(weight_u)
+            weight_combo.setStyleSheet("background-color: white; color: black; font-size: 18px;")
+            weight_combo.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            row_layout.addWidget(weight_combo)
+            weight_combo.currentTextChanged.connect(self.calculate_totals)
+            
+            delete_btn = QPushButton("Delete")
+            delete_btn.setObjectName("deleteBtn")
+            delete_btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            row_layout.addWidget(delete_btn)
 
-        delete_btn.clicked.connect(lambda checked, r=row_widget: self.delete_row(r))
-        
-        self.main_layout.insertWidget(0, row_widget)
+            delete_btn.clicked.connect(lambda checked, r=row_widget: self.delete_row(r))
+            self.calculate_totals()
 
-        self.calculate_totals()
+            self.main_layout.insertWidget(0, row_widget)
+
+            self.calculate_totals()
+            #self._parent.add_existing.setCurrentText("Add Existing Ingredient")
+        except:
+            pass
 
     def calculate_totals(self):
         current_price = 0
