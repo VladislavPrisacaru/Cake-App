@@ -15,13 +15,20 @@ from Stock.AddStock import AddStockWidget
 from Stock.ManageStock import ManageStockWidget
 from Options import OptionsWidget
 
+
+def load_style(path):
+    with open(path, "r") as f:
+        return f.read()
+    
+
 db = DatabaseManager("cakeshop.db")
 
 class Sidebar(QFrame):
     def __init__(self, main_window):
         super().__init__()
 
-        self.setStyleSheet("background-color: #07394B;")
+
+        self.setObjectName("Sidebar")
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.setMinimumWidth(240)
 
@@ -38,19 +45,14 @@ class Sidebar(QFrame):
     def create_button(self, text, indent=True): # to create loads of buttons easy
         button = QPushButton(text, self)
         button.setFixedHeight(45)
-
-        button.indent = "padding-left: 35px;" if indent else "padding-left: 14px;"
-
-        button.setStyleSheet(
-            f"QPushButton {{background-color: transparent; color: white; font-size: 18px; border: none; text-align: left; {button.indent}}}"
-            f"QPushButton:hover {{background-color: #0D4A62}}"
-            f"QPushButton:pressed {{background-color: #052B38}}")
+        button.setProperty("indent", indent)
+        button.setObjectName("SidebarButtons")
         self.layout.addWidget(button)
         return button
 
     def create_header(self, text):
         label = QLabel(text)
-        label.setStyleSheet("color: white; font-size: 22px; border: none; text-align: left; padding-left: 10px; font-weight: bold;")
+        label.setObjectName("Headers")
         self.layout.addWidget(label)
 
     def create_btns(self): # the menu buttons and its connections
@@ -95,16 +97,16 @@ class Sidebar(QFrame):
 
     def set_active(self, btn, name): # keep the active button highlighted and switch the window        
         if self.active_btn:
-            indent = self.active_btn.indent
-            self.active_btn.setStyleSheet(
-                f"QPushButton {{background-color: transparent; color: white; font-size: 18px; border: none; text-align: left; {indent}}}"
-                "QPushButton:hover {background-color: #0D4A62}"
-                "QPushButton:pressed {background-color: #052B38}")
+            self.active_btn.setProperty("active", False)
+            self.active_btn.style().unpolish(self.active_btn)
+            self.active_btn.style().polish(self.active_btn)
             
         self.active_btn = btn
         self.active_btn_name = name
-        self.active_btn.setStyleSheet(
-            f"QPushButton {{background-color: #0D4A62; color: white; font-size: 18px; border: none; text-align: left; {btn.indent}}}")
+
+        self.active_btn.setProperty("active", True)
+        self.active_btn.style().unpolish(self.active_btn)
+        self.active_btn.style().polish(self.active_btn)
 
         self.main_window.switch_window(name)
 
@@ -114,7 +116,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Cake MD")
-        self.setStyleSheet("background-color: lightgray;")
+        self.setObjectName("MainWindow")
         self.db = db
         main_widget = QWidget(self)
         self.setCentralWidget(main_widget)
@@ -143,7 +145,7 @@ class MainWindow(QMainWindow):
         # --- Recipes
         self.add_recipe_window = AddRecipeWidget(self, ing=AddIngredientsWidget)
         self.stacked_widget.addWidget(self.add_recipe_window)
-
+    
         self.manage_recipe_window = ManageRecipesWidget(self)
         self.stacked_widget.addWidget(self.manage_recipe_window)
 
@@ -212,6 +214,10 @@ os.environ["QT_SCALE_FACTOR"] = "1"
 #os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
 
 app = QApplication(sys.argv)
+
+style_path = os.path.join(os.path.dirname(__file__), "style.qss")
+app.setStyleSheet(load_style(style_path))
+
 window = MainWindow(db)
 window.show()
 app.exec()

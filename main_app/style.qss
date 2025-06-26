@@ -1,0 +1,299 @@
+/* ### ConstructorUI.py ### */
+
+/* Main window background */
+QWidget#MainWindow {
+    background-color: lightgray;
+}
+
+/* Sidebar frame */
+QFrame#Sidebar {
+    background-color: #07394B;
+}
+
+/* Sidebar buttons */
+QPushButton#SidebarButtons {
+    background-color: transparent;
+    color: white;
+    font-size: 18px;
+    border: none;
+    text-align: left;
+    padding-left: 35px;
+}
+
+QPushButton#SidebarButtons[indent="false"] {
+    padding-left: 14px;
+}
+
+QPushButton#SidebarButtons:hover {
+    background-color: #0D4A62;
+}
+
+QPushButton#SidebarButtons:pressed {
+    background-color: #052B38;
+}
+
+QPushButton#SidebarButtons[active="true"] {
+    background-color: #0D4A62;
+}
+
+/* Sidebar section headers */
+QLabel#Headers {
+    color: white;
+    font-size: 22px;
+    border: none;
+    text-align: left;
+    padding-left: 10px;
+    font-weight: bold;
+}
+
+
+
+
+
+/* ### AddIngredients.py ### */
+
+QLabel#HeaderLabel {
+    color: black; 
+    font-size: 25px;
+}
+
+QWidget#Overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Add ingredient Button */
+QPushButton#AddIngredientBtn {
+    background-color: #07394B; 
+    color: white; 
+    font-size: 20px; 
+    border: none; 
+    padding: 15px; 
+    border-radius: 25px;
+}
+
+QPushButton#AddIngredientBtn:hover { 
+    background-color: #0D4A62
+}
+
+QPushButton#AddIngredientBtn:pressed { 
+    background-color: #052B38 
+}
+
+/* The add/edit ingredient modal */
+QFrame#GetIngredientModal {
+    background-color: lightgray;
+    border-radius: 8px;
+    padding: 1px;
+}
+
+QLabel#TitleLabel {
+    color: black; 
+    font-size: 30px; 
+    font-weight: bold;
+}
+
+QLabel#ModalLabels {
+    color: black; 
+    font-size: 20px;
+}
+
+QPushButton#ModalBtns {
+    background-color: #07394B; 
+    color: white; 
+    font-size: 20px; 
+    border: none; 
+    padding: 4px; 
+    border-radius: 15px;
+    padding-left: 10px; 
+    padding-right: 10px;}
+                        
+QPushButton#ModalBtns:hover { 
+    background-color: #0D4A62
+}
+                
+QPushButton#ModalBtns:pressed { 
+    background-color: #052B38
+}
+
+QLineEdit#ModalEdits {
+    padding: 1px;
+    border-radius: 4px;
+    font-size: 18px;
+}
+
+QLineEdit#ModalEdits:focus {
+    border: 1px solid #07394B;
+} 
+
+
+
+
+
+/* ### AddRecipe.py ### */
+
+QWidget#AddRecipeWidget {
+    background-color: lightgray;
+}
+
+QLabel#AddRecipeLabels {
+    color: black; 
+    font-size: 25px;
+}
+
+QLabel#totallabels {
+    color: black; 
+    font-size: 32px; 
+    padding: 6px;
+}
+
+QLineEdit#RecipeNameEdit {
+    padding: 2px;
+    border-radius: 4px;
+    font-size: 22px;
+}
+                
+QLineEdit#RecipeNameEdit:focus {
+    border: 1px solid #07394B;
+}
+
+QPushButton#AddRecipeBtns {
+    background-color: #07394B; 
+    color: white; 
+    font-size: 22px; 
+    border: none; 
+    padding: 7px; 
+    border-radius: 15px;
+}
+
+QPushButton#AddRecipeBtns:hover {
+    background-color: #0D4A62
+}
+
+QPushButton#AddRecipeBtns:pressed {
+    background-color: #052B38
+}
+
+/* The Combo Box */
+QComboBox#AddIngredientCombo {
+    background-color: #07394B;
+    color: white;
+    font-size: 22px;
+    border: none;
+    padding: 7px;
+    border-radius: 15px;
+}
+
+QComboBox#AddIngredientCombo:hover {
+    background-color: #0D4A62;
+}
+
+QComboBox#AddIngredientCombo::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    width: 20px;
+    height: 20px;
+    image: url('Cake-App/main_app/Recipes/white_arrow.png');
+    border: none;
+    padding-right: 8px;
+}
+
+QComboBox#AddIngredientCombo QAbstractItemView {
+    background-color: #07394B;
+    color: white;
+    selection-background-color: #0D4A62;
+    border-radius: 10px;
+    font-size: 20px;
+    padding: 5px;
+}        
+
+QComboBox#AddIngredientCombo QAbstractItemView QScrollBar:vertical {
+    background: #07394B;
+    width: 12px;
+    margin: 0px;
+    border-radius: 10px;}   
+
+QComboBox#AddIngredientCombo QAbstractItemView QScrollBar::handle:vertical {
+    background: #0D4A62; 
+    min-height: 20px;
+    border-radius: 8px;}
+                
+QComboBox#AddIngredientCombo QAbstractItemView QScrollBar::add-page:vertical,
+QComboBox#AddIngredientCombo QAbstractItemView QScrollBar::sub-page:vertical {
+    height: 0px;
+    subcontrol-origin: margin;
+    subcontrol-position: top;  /* for add-line */
+    background: none;
+    border: none;
+}
+                
+QComboBox#AddIngredientCombo QAbstractItemView::up-button, 
+QComboBox#AddIngredientCombo QAbstractItemView::down-button {
+    /* Hide the scrollbar buttons completely */
+    width: 0px;
+    height: 0px;}
+
+/* Ingredient Box */
+QLineEdit#WeightEdit {
+    padding: 3px;
+    border-radius: 4px;
+    font-size: 20px;
+    color: black;
+    background-color: white;
+    border: 1px solid #ccc;
+}
+
+QLineEdit#WeightEdit:focus {
+    border: 1px solid #07394B;
+}
+
+QLabel#IngredientName {
+    color: black; 
+    font-size: 20px;
+    border: None;
+    min-width: 100px;
+    background-color: white;
+    border-radius: 5px;
+    padding-left: 3px;
+}
+
+QPushButton#DeleteBtn {
+    background-color: #b80617;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    min-width: 60px;
+    border-radius: 5px;
+}
+
+QPushButton#DeleteBtn:pressed {
+    background-color: #9e0514;
+}
+
+QPushButton#DeleteBtn:hover {
+    background-color: #cc0404;
+}
+
+QComboBox#WeightCombo {
+    padding: 3px;
+    font-size: 18px;
+    min-width: 60px;
+    color: black;
+    background-color: white;
+}
+
+QComboBox#WeightCombo::drop-down {
+    color:black;
+}
+
+QScrollArea#IngBoxScroll {
+    background-color: white;
+    border: 2px solid #07394B;
+}
+
+QWidget#ContentWidget {
+    background-color: white;
+}
+QWidget#RowWidget {
+    background-color: lightgray;
+    border: 1px solid #07394B;
+}

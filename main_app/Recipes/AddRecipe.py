@@ -11,13 +11,14 @@ class AddRecipeWidget(QWidget):
     def __init__(self, parent=None, ing=None):
         super().__init__()
 
-        self.setStyleSheet("background-color: lightgray;")
+        self.setObjectName("AddRecipeWidget")
 
         self._parent = parent
         self.db = parent.db
         
         self.main_layout = QVBoxLayout()
         label = QLabel("Add Recipe")
+        label.setObjectName("AddRecipeLabels")
         self.setLayout(self.main_layout)
 
         self.main_layout.addWidget(label, alignment=Qt.AlignCenter | Qt.AlignTop)
@@ -28,7 +29,6 @@ class AddRecipeWidget(QWidget):
         self.main_layout.addStretch()
 
         self.add_new()
-        self.set_style()
 
         signals.ingredient_added.connect(self.reload_ingredients)
         signals.ingredient_deleted.connect(self.reload_ingredients)
@@ -38,6 +38,8 @@ class AddRecipeWidget(QWidget):
         layout = QVBoxLayout(main_container)
 
         self.recipe_name, _, self.label = HelperClass.create_labeled_input("Recipe Name:", layout)
+        self.label.setObjectName("AddRecipeLabels")
+        self.recipe_name.setObjectName("RecipeNameEdit")
         self.recipe_name.setMaxLength(50)
 
         self.ingredient_box = IngredientBox(self)
@@ -45,6 +47,7 @@ class AddRecipeWidget(QWidget):
         add_ingredient_layout = QHBoxLayout()
 
         self.add_new_ing = QPushButton("Add New Ingredient")
+        self.add_new_ing.setObjectName("AddRecipeBtns")
         self.add_existing = self.existing_ingredients_combo()
 
         add_ingredient_layout.addWidget(self.add_new_ing)
@@ -65,10 +68,10 @@ class AddRecipeWidget(QWidget):
         self.price = QLabel("0")
         self.total_weight = QLabel("Raw Weight:")
         self.weight = QLabel("0")
-        self.total_price.setObjectName("totallabel")
-        self.total_weight.setObjectName("totallabel")
-        self.price.setObjectName("totallabel")
-        self.weight.setObjectName("totallabel")
+        self.total_price.setObjectName("totallabels")
+        self.total_weight.setObjectName("totallabels")
+        self.price.setObjectName("totallabels")
+        self.weight.setObjectName("totallabels")
         
         totals_layout.addWidget(self.total_price)
         totals_layout.addWidget(self.price)
@@ -84,6 +87,9 @@ class AddRecipeWidget(QWidget):
 
         self.reset_btn = QPushButton("Reset Recipe")
         self.save_btn = QPushButton("Save Recipe")
+
+        self.reset_btn.setObjectName("AddRecipeBtns")
+        self.save_btn.setObjectName("AddRecipeBtns")
 
         reset_save_layout.addWidget(self.reset_btn)
         reset_save_layout.addWidget(self.save_btn)
@@ -103,6 +109,7 @@ class AddRecipeWidget(QWidget):
         ingredients = [name for _, name, *_ in self._parent.db.get_all_ingredients()]
         
         self.ing_combo = StickyCombo(self)
+        self.ing_combo.setObjectName("AddIngredientCombo")
         self.ing_combo.addItems(ingredients)
         self.ing_combo.setMaxVisibleItems(10)
         self.ing_combo.setCurrentText("Add Existing Ingredient")
@@ -123,7 +130,7 @@ class AddRecipeWidget(QWidget):
     
     def add_new(self):
         self.overlay = QWidget(self) # create an overlay widget
-        self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 0.5);")
+        self.overlay.setObjectName("Overlay")
         self.overlay.hide()
         
         self.modal_widget = GetIngredients(parent=self)
@@ -173,87 +180,6 @@ class AddRecipeWidget(QWidget):
     def reset_recipe(self):
         pass
 
-    def set_style(self):
-        self.setStyleSheet("""
-            QLabel {
-                color: black; 
-                font-size: 25px;}
-            
-            QLabel#totallabel {
-                color: black; 
-                font-size: 32px; 
-                padding: 6px;}
-                           
-            QLineEdit {
-                padding: 2px;
-                border-radius: 4px;
-                font-size: 22px;}
-                           
-            QLineEdit:focus {
-                border: 1px solid #07394B;}
-            
-            QPushButton {background-color: #07394B; color: white; font-size: 22px; border: none; padding: 7px; border-radius: 15px;}
-            QPushButton:hover {background-color: #0D4A62}
-            QPushButton:pressed {background-color: #052B38}
-
-            QComboBox {
-                background-color: #07394B;
-                color: white;
-                font-size: 22px;
-                border: none;
-                padding: 7px;
-                border-radius: 15px;
-            }
-
-            QComboBox:hover {
-                background-color: #0D4A62;
-            }
-
-            QComboBox::drop-down {
-                subcontrol-origin: padding;
-                subcontrol-position: center right;
-                width: 20px;
-                height: 20px;
-                image: url(Recipes/white_arrow.png);
-                border: none;
-                padding-right: 8px;
-            }
-
-            QComboBox QAbstractItemView {
-                background-color: #07394B;
-                color: white;
-                selection-background-color: #0D4A62;
-                border-radius: 10px;
-                font-size: 20px;
-                padding: 5px;
-            }        
-
-            QComboBox QAbstractItemView QScrollBar:vertical {
-                background: #07394B;
-                width: 12px;
-                margin: 0px;
-                border-radius: 10px;}   
-
-            QComboBox QAbstractItemView QScrollBar::handle:vertical {
-                background: #0D4A62; 
-                min-height: 20px;
-                border-radius: 8px;}
-                           
-            QComboBox QAbstractItemView QScrollBar::add-page:vertical,
-            QComboBox QAbstractItemView QScrollBar::sub-page:vertical {
-                height: 0px;
-                subcontrol-origin: margin;
-                subcontrol-position: top;  /* for add-line */
-                background: none;
-                border: none;
-            }
-                           
-            QComboBox QAbstractItemView::up-button, 
-            QComboBox QAbstractItemView::down-button {
-                /* Hide the scrollbar buttons completely */
-                width: 0px;
-                height: 0px;}
-            """)
 
 class IngredientBox(QScrollArea):
     def __init__(self, parent=None):
@@ -261,11 +187,13 @@ class IngredientBox(QScrollArea):
         self._parent = parent
         self.db = parent.db
         self.setMinimumSize(200, 500)
+
+        self.setObjectName("IngBoxScroll")
         
         self.setWidgetResizable(True)
 
         self.content_widget = QWidget()
-        self.content_widget.setObjectName("contentWidget")
+        self.content_widget.setObjectName("ContentWidget")
         self.setWidget(self.content_widget)
         
         self.main_layout = QVBoxLayout(self.content_widget)
@@ -273,15 +201,13 @@ class IngredientBox(QScrollArea):
         self.main_layout.setSpacing(5)
         self.main_layout.addStretch()
 
-        self.set_style()
-
     def add_ingredient(self, name):
         # Get data from DB
         try:
             date, ing_name, weight, weight_u, price, price_u = self.db.get_chosen_ingredient(name)
             
             row_widget = QWidget()
-            row_widget.setObjectName("rowWidget")
+            row_widget.setObjectName("RowWidget")
             row_widget.setMaximumHeight(50)
             
             row_layout = QHBoxLayout(row_widget)
@@ -289,10 +215,12 @@ class IngredientBox(QScrollArea):
             row_layout.setSpacing(20)
             
             label = QLabel(ing_name)
+            label.setObjectName("IngredientName")
             label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
             row_layout.addWidget(label)
             
             weight_edit = QLineEdit()
+            weight_edit.setObjectName("WeightEdit")
             weight_edit.setText(f"{weight}")
             weight_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
             validator = QDoubleValidator(0.0, 99999.99, 2)
@@ -302,15 +230,15 @@ class IngredientBox(QScrollArea):
             weight_edit.textChanged.connect(self.calculate_totals)
             
             weight_combo = QComboBox()
+            weight_combo.setObjectName("WeightCombo")
             weight_combo.addItems(["g", "kg", "ml", "l", "oz", "lb"])
             weight_combo.setCurrentText(weight_u)
-            weight_combo.setStyleSheet("background-color: white; color: black; font-size: 18px;")
             weight_combo.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
             row_layout.addWidget(weight_combo)
             weight_combo.currentTextChanged.connect(self.calculate_totals)
             
             delete_btn = QPushButton("Delete")
-            delete_btn.setObjectName("deleteBtn")
+            delete_btn.setObjectName("DeleteBtn")
             delete_btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
             row_layout.addWidget(delete_btn)
 
@@ -371,70 +299,3 @@ class IngredientBox(QScrollArea):
         row.setParent(None)
         row.deleteLater()
         self.calculate_totals()
-    
-    def set_style(self):
-        style = """            
-            QLineEdit {
-                padding: 3px;
-                border-radius: 4px;
-                font-size: 20px;
-                color: black;
-                background-color: white;
-                border: 1px solid #ccc;
-            }
-            
-            QLineEdit:focus {
-                border: 1px solid #07394B;
-            }
-            
-            QLabel {
-                color: black; 
-                font-size: 20px;
-                border: None;
-                min-width: 100px;
-                background-color: white;
-                border-radius: 5px;
-                padding-left: 3px;
-            }
-            
-            QPushButton#deleteBtn {
-                background-color: #b80617;
-                color: white;
-                border: none;
-                padding: 5px 10px;
-                min-width: 60px;
-                border-radius: 5px;
-            }
-            
-            QPushButton#deleteBtn:pressed {
-                background-color: #9e0514;
-            }
-
-            QPushButton#deleteBtn:hover {
-                background-color: #cc0404;
-            }
-            
-            QComboBox {
-                padding: 3px;
-                font-size: 18px;
-                min-width: 60px;
-                color: black;
-                background-color: white;
-            }
-
-            QComboBox::drop-down {
-                color:black;
-            }
-            QScrollArea {
-                background-color: white;
-                border: 2px solid #07394B;
-            }
-            QWidget#contentWidget {
-                background-color: white;
-            }
-            QWidget#rowWidget {
-                background-color: lightgray;
-                border: 1px solid #07394B;
-            }
-        """
-        self.setStyleSheet(style)

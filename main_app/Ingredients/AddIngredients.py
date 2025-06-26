@@ -15,7 +15,7 @@ class AddIngredientsWidget(QWidget):
         self.setLayout(self.main_layout)
 
         label = QLabel("Ingredients Overview")
-        label.setStyleSheet("color: black; font-size: 25px;")
+        label.setObjectName("HeaderLabel")
 
         self.main_layout.addWidget(label, alignment=Qt.AlignCenter | Qt.AlignTop)
         self.main_layout.setContentsMargins(0, 20, 0, 30)
@@ -23,7 +23,7 @@ class AddIngredientsWidget(QWidget):
         self.add_btn()
 
         self.overlay = QWidget(self) # create an overlay widget
-        self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 0.5);")
+        self.overlay.setObjectName("Overlay")
         self.overlay.hide()
         
         self.modal_widget = GetIngredients(parent=self)
@@ -37,11 +37,8 @@ class AddIngredientsWidget(QWidget):
         layout.setContentsMargins(0, 10, 0, 20)
 
         add_btn = QPushButton("Add Ingredient")
+        add_btn.setObjectName("AddIngredientBtn")
         add_btn.setMinimumWidth(500)
-        add_btn.setStyleSheet(
-            "QPushButton {background-color: #07394B; color: white; font-size: 20px; border: none; padding: 15px; border-radius: 25px;}"         
-            "QPushButton:hover { background-color: #0D4A62 }"
-            "QPushButton:pressed { background-color: #052B38 }")
         add_btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
         layout.addStretch() # so its at teh center of the screen
@@ -102,11 +99,10 @@ class AddIngredientsWidget(QWidget):
 class GetIngredients(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setStyleSheet("background-color: lightgray; border-radius: 10px; padding: 4px;")
+        self.setObjectName("GetIngredientModal")
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         self.initUI()
         self.adjustSize()
-        self.set_style()
 
         self.db = parent.db
         
@@ -135,19 +131,32 @@ class GetIngredients(QFrame):
         
         # Title label
         self.title_label = QLabel("Add Ingredient")
-        self.title_label.setStyleSheet("color: black; font-size: 30px; font-weight: bold;")
+        self.title_label.setObjectName("TitleLabel")
+        #self.title_label.setStyleSheet("color: black; font-size: 30px; font-weight: bold;")
         self.title_label.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(self.title_label)
 
         # Input fields
-        self.ing_name, _, _ = HelperClass.create_labeled_input("Ingredient Name:", self.layout, place_holder_text="e.g. Flour, Sugar, etc.")
-        self.ing_weight, self.ing_weight_unit, _ = HelperClass.create_labeled_input("Ingredient Weight:", self.layout, ["g", "kg", "ml", "l", "oz", "lb"])
-        self.ing_price, self.ing_price_unit, _ = HelperClass.create_labeled_input("Ingredient Price:", self.layout, ["£", "€", "$"])
+        self.ing_name, _, name_label = HelperClass.create_labeled_input("Ingredient Name:", self.layout, place_holder_text="e.g. Flour, Sugar, etc.")
+        self.ing_weight, self.ing_weight_unit, weight_label = HelperClass.create_labeled_input("Ingredient Weight:", self.layout, ["g", "kg", "ml", "l", "oz", "lb"])
+        self.ing_price, self.ing_price_unit, price_label = HelperClass.create_labeled_input("Ingredient Price:", self.layout, ["£", "€", "$"])
+
+        self.ing_name.setObjectName("ModalEdits")
+        self.ing_weight.setObjectName("ModalEdits")
+        self.ing_price.setObjectName("ModalEdits")
+
+        name_label.setObjectName("ModalLabels")
+        weight_label.setObjectName("ModalLabels")
+        price_label.setObjectName("ModalLabels")
 
         # Initialize buttons
         self.save_btn = QPushButton("Save")
         self.delete_btn = QPushButton("Delete")
         self.cancel_btn = QPushButton("Cancel")
+
+        self.save_btn.setObjectName("ModalBtns")
+        self.delete_btn.setObjectName("ModalBtns")
+        self.cancel_btn.setObjectName("ModalBtns")
         
         # Connect signals
         self.cancel_btn.clicked.connect(self.cancel_event)
@@ -224,41 +233,6 @@ class GetIngredients(QFrame):
         self.ing_weight_unit.setCurrentIndex(0)
         self.ing_price_unit.setCurrentIndex(0)
 
-    def set_style(self):
-        self.setStyleSheet("""
-            QFrame {
-                background-color: lightgray;
-                border-radius: 8px;
-                padding: 1px;}
-                                   
-            QLineEdit {
-                padding: 1px;
-                border-radius: 4px;
-                font-size: 18px;}
-                           
-            QLineEdit:focus {
-                border: 1px solid #07394B;}
-                        
-            QPushButton {
-                background-color: #07394B; 
-                color: white; 
-                font-size: 20px; 
-                border: none; 
-                padding: 4px; 
-                border-radius: 15px;
-                padding-left: 10px; 
-                padding-right: 10px;}
-                                 
-            QPushButton:hover { 
-                background-color: #0D4A62}
-                           
-            QPushButton:pressed { 
-                background-color: #052B38}
-                           
-            QLabel {
-                color: black; 
-                font-size: 20px;}
-        """)
 
 class LoadIngredient(QFrame):
     def __init__(self, parent=None, ingredient=None):
