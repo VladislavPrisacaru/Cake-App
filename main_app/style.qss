@@ -121,9 +121,27 @@ QLineEdit#ModalEdits {
     font-size: 18px;
 }
 
-QLineEdit#ModalEdits:focus {
+QLineEdit#ModalEdits:focus,
+QLineEdit#ModalEdits:hover {
     border: 1px solid #07394B;
+    border-radius: 4px;
 } 
+
+QComboBox#UnitCombos:focus,
+QComboBox#UnitCombos:hover {
+    border: 1px solid #07394B;
+    border-radius: 4px;
+}
+
+QComboBox#UnitCombos::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    width: 10px;
+    height: 10px;
+    image: url('Cake-App/main_app/Recipes/black_arrow.png');
+    border: none;
+    padding-right: 8px;
+}
 
 
 
@@ -153,6 +171,10 @@ QLineEdit#RecipeNameEdit {
 }
                 
 QLineEdit#RecipeNameEdit:focus {
+    border: 1px solid #07394B;
+}
+
+QLineEdit#RecipeNameEdit:hover {
     border: 1px solid #07394B;
 }
 
@@ -233,67 +255,131 @@ QComboBox#AddIngredientCombo QAbstractItemView::down-button {
     height: 0px;}
 
 /* Ingredient Box */
-QLineEdit#WeightEdit {
-    padding: 3px;
-    border-radius: 4px;
-    font-size: 20px;
-    color: black;
+
+QWidget#RowWidget {
+    background-color: #f3f3f3;
+    border-radius: 10px;
+    border: 1px solid #d0d0d0;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Inner scrollable area */
+QScrollArea#IngBoxScroll {
+    background-color: transparent;
+    border: none;
+}
+
+QWidget#ContentWidget {
     background-color: white;
+    border: 1px solid #0D4A62;
+}
+
+/* Ingredient label (e.g. "Sugar") */
+QLabel#IngredientName {
+    font-size: 18px;
+    color: #333;
+    background-color: transparent;
+    padding: 4px 8px;
+    border: none;
+}
+
+/* Ingredient weight input */
+QLineEdit#WeightEdit {
+    font-size: 18px;
+    border-radius: 6px;
+    padding: 6px 10px;
+    background-color: white;
+    color: black;
     border: 1px solid #ccc;
+    min-width: 60px;
 }
 
 QLineEdit#WeightEdit:focus {
     border: 1px solid #07394B;
 }
 
-QLabel#IngredientName {
-    color: black; 
-    font-size: 20px;
-    border: None;
-    min-width: 100px;
-    background-color: white;
-    border-radius: 5px;
-    padding-left: 3px;
+QLineEdit#WeightEdit:hover {
+    border: 1px solid #07394B;
 }
 
-QPushButton#DeleteBtn {
-    background-color: #b80617;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    min-width: 60px;
-    border-radius: 5px;
-}
-
-QPushButton#DeleteBtn:pressed {
-    background-color: #9e0514;
-}
-
-QPushButton#DeleteBtn:hover {
-    background-color: #cc0404;
-}
-
+/* Weight unit combo (e.g. g, ml, etc) */
 QComboBox#WeightCombo {
-    padding: 3px;
     font-size: 18px;
-    min-width: 60px;
-    color: black;
+    border-radius: 6px;
+    padding: 6px 10px;
     background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    min-width: 60px;
+}
+
+QComboBox#WeightCombo:focus {
+    border: 1px solid #07394B;
+}
+
+QComboBox#WeightCombo:hover {
+    border: 1px solid #07394B;
 }
 
 QComboBox#WeightCombo::drop-down {
-    color:black;
+    color: black;
+    border: none;
 }
 
-QScrollArea#IngBoxScroll {
+/* ComboBox dropdown menu */
+QComboBox#WeightCombo QListView {
     background-color: white;
-    border: 2px solid #07394B;
+    color: black;
+    border: none;
+    padding: 5px;
 }
 
-QWidget#ContentWidget {
-    background-color: white;
+QComboBox#WeightCombo::down-arrow {
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    width: 20px;
+    height: 20px;
+    image: url('Cake-App/main_app/Recipes/black_arrow.png');
+    border: none;
+    padding-right: 8px;
 }
-QWidget#RowWidget {
-    background-color: lightgray;
-    border: 1px solid #07394B;
+
+/* Delete button */
+QPushButton#DeleteBtn {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+QPushButton#DeleteBtn:hover {
+    background-color: #c9302c;
+}
+
+QPushButton#DeleteBtn:pressed {
+    background-color: #ac2925;
+}
+
+/* Scrollbar (optional override for OS dark themes) */
+QScrollBar#IngBoxScroll:vertical {
+    background: transparent;
+    width: 8px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar#IngBoxScroll::handle:vertical {
+    background: #aaa;
+    border-radius: 4px;
+}
+
+QScrollBar#IngBoxScroll::handle:vertical:hover {
+    background: #888;
+}
+
+QScrollBar#IngBoxScroll::add-line:vertical,
+QScrollBar#IngBoxScroll::sub-line:vertical {
+    height: 0px;
 }

@@ -145,6 +145,9 @@ class GetIngredients(QFrame):
         self.ing_weight.setObjectName("ModalEdits")
         self.ing_price.setObjectName("ModalEdits")
 
+        self.ing_weight_unit.setObjectName("UnitCombos")
+        self.ing_price_unit.setObjectName("UnitCombos")
+
         name_label.setObjectName("ModalLabels")
         weight_label.setObjectName("ModalLabels")
         price_label.setObjectName("ModalLabels")

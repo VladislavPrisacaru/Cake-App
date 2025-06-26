@@ -151,3 +151,7 @@ class StickyCombo(QComboBox):
                     self.activated.emit(index.row())
                 return True  # block the default behavior (closing)
         return super().eventFilter(obj, event)
+    
+    def mousePressEvent(self, e):
+        self.showPopup()
+        super().mousePressEvent(e)
