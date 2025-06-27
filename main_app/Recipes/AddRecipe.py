@@ -178,7 +178,8 @@ class AddRecipeWidget(QWidget):
         pass
 
     def reset_recipe(self):
-        pass
+        self.ingredient_box.delete_all_rows()
+        self.recipe_name.setText("")
 
 
 class IngredientBox(QScrollArea):
@@ -299,3 +300,9 @@ class IngredientBox(QScrollArea):
         row.setParent(None)
         row.deleteLater()
         self.calculate_totals()
+    
+    def delete_all_rows(self):
+        for i in reversed(range(self.main_layout.count())):
+            row_widget = self.main_layout.itemAt(i).widget()
+            if row_widget is not None:
+                self.delete_row(row_widget)

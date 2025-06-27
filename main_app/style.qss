@@ -257,7 +257,7 @@ QComboBox#AddIngredientCombo QAbstractItemView::down-button {
 /* Ingredient Box */
 
 QWidget#RowWidget {
-    background-color: #f3f3f3;
+    background-color: #0D4A62;
     border-radius: 10px;
     border: 1px solid #d0d0d0;
     padding: 10px;
@@ -278,7 +278,7 @@ QWidget#ContentWidget {
 /* Ingredient label (e.g. "Sugar") */
 QLabel#IngredientName {
     font-size: 18px;
-    color: #333;
+    color: #fff;
     background-color: transparent;
     padding: 4px 8px;
     border: none;
