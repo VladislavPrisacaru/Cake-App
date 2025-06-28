@@ -12,25 +12,46 @@ class DatabaseManager:
         #create table if doesnt exist
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS ingredients(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE,
-            weight INTEGER NOT NULL,
-            weight_unit TEXT NOT NULL,
-            price REAL NOT NULL,
-            price_unit TEXT NOT NULL,
-            current_date TEXT NOT NULL
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL UNIQUE,
+                weight INTEGER NOT NULL,
+                weight_unit TEXT NOT NULL,
+                price REAL NOT NULL,
+                price_unit TEXT NOT NULL,
+                current_date TEXT NOT NULL
             );
         """)
+
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS recipes(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL
+            );
+        """)
+
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS recipe_ingredients(
+                id  INTEGER PRIMARY KEY AUTOINCREMENT,
+                recipe_id INTEGER,
+                ingredient_id INTEGER,
+                ingredient_weight REAL NOT NULL,
+                ingredient_weight_unit TEXT NOT NULL,
+                FOREIGN KEY (recipe_id) REFERENCES recipes(id),
+                FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
+            );
+        """)
+
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS sales_data(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            sales_date TEXT NOT NULL,
-            cake_name TEXT NOT NULL,
-            cake_type TEXT NOT NULL, 
-            cake_weight INTEGER NOT NULL,
-            primary_price REAL NOT NULL,
-            selling_price REAL NOT NULL              
-            );""")
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                sales_date TEXT NOT NULL,
+                cake_name TEXT NOT NULL,
+                cake_type TEXT NOT NULL, 
+                cake_weight INTEGER NOT NULL,
+                primary_price REAL NOT NULL,
+                selling_price REAL NOT NULL              
+            );
+        """)
         self.connection.commit()
     
     def add_ingredient(self, name, weight, weight_unit, price, price_unit):
@@ -80,6 +101,23 @@ class DatabaseManager:
         ing = self.cursor.fetchone()
         return ing[0] if ing else None
     
+    def get_ingredient_id(self, name):
+        self.cursor.execute("SELECT id FROM ingredients WHERE name = ?;", (name,))
+        Id = self.cursor.fetchone()
+        return Id[0] if Id else None
+    
+    def add_recipe(self, recipe_name, ingredients=[]):
+        self.cursor.execute("INSERT INTO recipes(name) VALUES (?);", (recipe_name,))
+        recipe_id = self.cursor.lastrowid
+
+        for ing_id, ing_weight, ing_weight_unit in ingredients:
+            self.cursor.execute("""INSERT INTO recipe_ingredients(recipe_id, ingredient_id, ingredient_weight, ingredient_weight_unit)
+                                   VALUES (?, ?, ?, ?);""", (recipe_id, ing_id, ing_weight, ing_weight_unit))
+            
+        self.connection.commit()
+
+        print("recipe saved")
+
     def clear_data(self):
         self.cursor.execute("DELETE FROM ingredients")
         self.cursor.execute("DELETE FROM sales_data")

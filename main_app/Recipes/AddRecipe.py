@@ -175,7 +175,7 @@ class AddRecipeWidget(QWidget):
         self.ingredient_box.add_ingredient(last_ing)
     
     def save_recipe(self):
-        pass
+        self.ingredient_box.save_current_recipe()
 
     def reset_recipe(self):
         self.ingredient_box.delete_all_rows()
@@ -306,3 +306,28 @@ class IngredientBox(QScrollArea):
             row_widget = self.main_layout.itemAt(i).widget()
             if row_widget is not None:
                 self.delete_row(row_widget)
+    
+    def save_current_recipe(self):
+        ingredients = []
+        for i in range(self.main_layout.count()):
+            row_widget = self.main_layout.itemAt(i).widget()
+            if row_widget is None:
+                continue 
+
+            name_lbl = row_widget.findChild(QLabel)
+            weight_edit = row_widget.findChild(QLineEdit)
+            unit_combo = row_widget.findChild(QComboBox)
+
+            name = name_lbl.text()
+            weight = float(weight_edit.text())
+            unit = unit_combo.currentText()
+
+            id = self.db.get_ingredient_id(name)
+
+            ingredient = id, weight, unit
+
+            ingredients.append(ingredient)
+
+        self.db.add_recipe(self._parent.recipe_name.text(), ingredients)
+
+
