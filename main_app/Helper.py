@@ -45,8 +45,6 @@ class HelperClass:
         def __init__(self, start_bg, end_bg, start_text, end_text, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
-            self.setMaximumHeight(100)
-
             self._bg_color = QColor(*start_bg)
             self._text_color = QColor(*start_text)
 

@@ -119,7 +119,20 @@ class DatabaseManager:
         print("recipe saved")
     
     def get_all_recipes(self):
-        pass
+        self.cursor.execute("""
+            SELECT  r.name,
+                    i.name,
+                    ri.ingredient_weight,
+                    ri.ingredient_weight_unit,
+                    i.weight, i.weight_unit,
+                    i.price, i.price_unit
+            FROM recipes r
+            JOIN recipe_ingredients ri ON r.id = ri.recipe_id
+            JOIN ingredients i ON i.id = ri.ingredient_id
+            ORDER BY r.name;
+                     """)
+        recipes = self.cursor.fetchall()
+        return recipes
 
     def clear_data(self):
         self.cursor.execute("DELETE FROM ingredients")

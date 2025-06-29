@@ -330,4 +330,6 @@ class IngredientBox(QScrollArea):
 
         self.db.add_recipe(self._parent.recipe_name.text(), ingredients)
 
+        self._parent._parent.manage_recipe_window.load_recipes()
+
 

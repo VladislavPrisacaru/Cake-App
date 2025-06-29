@@ -36,9 +36,6 @@ class AddIngredientsWidget(QWidget):
         self.create_scroll_grid()
         self.load_ingredients()
 
-        self.repaint()
-        self.scroll_area.repaint()
-
     def add_btn(self):
         # add ingredient button at the top
         layout = QHBoxLayout()
@@ -79,7 +76,7 @@ class AddIngredientsWidget(QWidget):
         
         self.grid_layout = QGridLayout()
         self.grid_layout.setAlignment(Qt.AlignTop)
-        self.grid_layout.setSpacing(5)
+        self.grid_layout.setSpacing(15)
         self.grid_layout.setContentsMargins(10, 10, 10, 10)  # Add some margins
         self.scroll_container.setLayout(self.grid_layout)
         
@@ -106,6 +103,7 @@ class AddIngredientsWidget(QWidget):
         ingredient_btn.setText(f"<html><b>{name}</b><br>"
                                 f"Weight: {weight}{weight_unit}<br>"
                                 f"Price: {price_unit}{price}</html>")
+        ingredient_btn.setMaximumHeight(100)
         
         #allow to edit or delete the existing ingredient
         ingredient_btn.mousePressEvent = lambda event: self.show_modal("edit", ingredient)
