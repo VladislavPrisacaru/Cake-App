@@ -117,6 +117,9 @@ class DatabaseManager:
         self.connection.commit()
 
         print("recipe saved")
+    
+    def get_all_recipes(self):
+        pass
 
     def clear_data(self):
         self.cursor.execute("DELETE FROM ingredients")

@@ -52,6 +52,21 @@ QLabel#Headers {
 
 /* ### AddIngredients.py ### */
 
+QScrollArea#IngredientScrollArea {
+    background: transparent;
+    border: none;
+}
+QScrollArea#IngredientScrollArea > QWidget > QWidget {
+    background: transparent;
+}
+QScrollArea#IngredientScrollArea > QWidget#scrollAreaWidgetContents {
+    background: transparent;
+}
+
+QWidget#AddIngredientsWidget {
+    background-color: lightgray;
+}
+
 QLabel#HeaderLabel {
     color: black; 
     font-size: 25px;
@@ -382,4 +397,19 @@ QScrollBar#IngBoxScroll::handle:vertical:hover {
 QScrollBar#IngBoxScroll::add-line:vertical,
 QScrollBar#IngBoxScroll::sub-line:vertical {
     height: 0px;
+}
+
+
+
+
+
+/* ### ManageRecipe.py ### */
+
+QWidget#ManageRecipeWidget {
+    background-color: lightgray;
+}
+
+QLabel#ManageRecipeLabel {
+    color: black; 
+    font-size: 25px;
 }

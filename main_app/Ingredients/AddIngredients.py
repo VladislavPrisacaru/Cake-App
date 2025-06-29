@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QLineEdit, QComboBox, QFrame, QGridLayout
+from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QScrollArea, QLineEdit, QComboBox, QFrame, QGridLayout
 from PySide6.QtCore import Qt, QRegularExpression, Signal
 from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator
 import sys
@@ -9,6 +9,10 @@ from Helper import HelperClass, signals
 class AddIngredientsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        self.setObjectName("AddIngredientsWidget")
+
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.db = parent.db
         self.main_layout = QVBoxLayout(self)
@@ -29,7 +33,11 @@ class AddIngredientsWidget(QWidget):
         self.modal_widget = GetIngredients(parent=self)
         self.modal_widget.hide()
 
+        self.create_scroll_grid()
         self.load_ingredients()
+
+        self.repaint()
+        self.scroll_area.repaint()
 
     def add_btn(self):
         # add ingredient button at the top
@@ -49,27 +57,60 @@ class AddIngredientsWidget(QWidget):
         self.main_layout.setAlignment(Qt.AlignTop)
 
         add_btn.clicked.connect(lambda: self.show_modal("add"))
+    
+    def create_scroll_grid(self):
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setObjectName("IngredientScrollArea")
+        self.scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        
+        # Add these lines to ensure proper background handling
+        self.scroll_area.setFrameShape(QScrollArea.NoFrame)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        
+        self.scroll_container = QWidget()
+        self.scroll_container.setObjectName("IngredientScrollContainer")
+        self.scroll_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        
+        # Set a transparent background policy
+        self.scroll_container.setAttribute(Qt.WA_TranslucentBackground)
+        self.scroll_area.setAttribute(Qt.WA_TranslucentBackground)
+        
+        self.grid_layout = QGridLayout()
+        self.grid_layout.setAlignment(Qt.AlignTop)
+        self.grid_layout.setSpacing(5)
+        self.grid_layout.setContentsMargins(10, 10, 10, 10)  # Add some margins
+        self.scroll_container.setLayout(self.grid_layout)
+        
+        self.scroll_area.setWidget(self.scroll_container)
+        self.main_layout.addWidget(self.scroll_area)
 
     def load_ingredients(self):
-        # Clear existing widgets first
-        if hasattr(self, 'grid_layout'): # i think this repositions the items in the grid layout
-            for i in reversed(range(self.grid_layout.count())): 
-                widget = self.grid_layout.itemAt(i).widget()
-                if widget:
-                    widget.setParent(None)
-        else:
-            self.grid_layout = QGridLayout()
-            self.main_layout.addLayout(self.grid_layout)
+        for i in reversed(range(self.grid_layout.count())):
+            widget = self.grid_layout.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
 
-        self.grid_layout.setSpacing(5)
         ingredients = self.db.get_all_ingredients()
 
-        # 3 ingredients per row
         for idx, ingredient in enumerate(ingredients):
             row = idx // 3
             col = idx % 3
-            ingredient_widget = LoadIngredient(self, ingredient)
+            ingredient_widget = self.load_ingredient(ingredient)
             self.grid_layout.addWidget(ingredient_widget, row, col)
+    
+    def load_ingredient(self, ingredient):
+        date, name, weight, weight_unit, price, price_unit = ingredient
+        ingredient_btn = HelperClass.AnimatedLabel((255, 255, 255),(13, 74, 98),(0, 0, 0),(255, 255, 255))
+        ingredient_btn.setText(f"<html><b>{name}</b><br>"
+                                f"Weight: {weight}{weight_unit}<br>"
+                                f"Price: {price_unit}{price}</html>")
+        
+        #allow to edit or delete the existing ingredient
+        ingredient_btn.mousePressEvent = lambda event: self.show_modal("edit", ingredient)
+
+        return ingredient_btn
 
     def show_modal(self, mode="add", ingredient=None):
         # set the overlay to cover the entire main window
@@ -235,29 +276,3 @@ class GetIngredients(QFrame):
         self.ing_name.setText("")
         self.ing_weight_unit.setCurrentIndex(0)
         self.ing_price_unit.setCurrentIndex(0)
-
-
-class LoadIngredient(QFrame):
-    def __init__(self, parent=None, ingredient=None):
-        super().__init__(parent)
-        self.ingredient = ingredient
-        self.initUI()
-
-    def initUI(self):
-        # load ingredient object
-        layout = QHBoxLayout(self)
-
-        if not self.ingredient:
-            return
-
-        date, name, weight, weight_unit, price, price_unit = self.ingredient
-        ingredient_btn = HelperClass.AnimatedLabel((255, 255, 255),(13, 74, 98),(0, 0, 0),(255, 255, 255))
-        ingredient_btn.setText(f"<html><b>{name}</b><br>"
-                                f"Weight: {weight}{weight_unit}<br>"
-                                f"Price: {price_unit}{price}</html>")
-        
-        layout.addWidget(ingredient_btn)
-        
-        self.setLayout(layout)
-        #allow to edit or delete the existing ingredient
-        ingredient_btn.mousePressEvent = lambda event: self.parent().show_modal("edit", self.ingredient)
