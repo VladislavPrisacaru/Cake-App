@@ -141,3 +141,6 @@ class DatabaseManager:
     
     def close_conn(self):
         self.connection.close()
+
+
+db = DatabaseManager("cakeshop.db")

@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QScrollArea, QFrame, QMenu, QWidgetAction, QLineEdit, QComboBox, QSizePolicy, QAbstractItemView
 from PySide6.QtCore import Qt, QEvent
 from PySide6.QtGui import QIcon, QDoubleValidator
+from Database import db
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -14,7 +15,7 @@ class AddRecipeWidget(QWidget):
         self.setObjectName("AddRecipeWidget")
 
         self._parent = parent
-        self.db = parent.db
+        self.db = db
         
         self.main_layout = QVBoxLayout()
         label = QLabel("Add Recipe")
@@ -106,7 +107,7 @@ class AddRecipeWidget(QWidget):
         return main_container
     
     def existing_ingredients_combo(self):
-        ingredients = [name for _, name, *_ in self._parent.db.get_all_ingredients()]
+        ingredients = [name for _, name, *_ in self.db.get_all_ingredients()]
         
         self.ing_combo = StickyCombo(self)
         self.ing_combo.setObjectName("AddIngredientCombo")
@@ -162,7 +163,7 @@ class AddRecipeWidget(QWidget):
         self.modal_widget.hide() 
 
     def reload_ingredients(self):
-        ingredients = [name for _, name, *_ in self._parent.db.get_all_ingredients()]
+        ingredients = [name for _, name, *_ in self.db.get_all_ingredients()]
         self.ing_combo.blockSignals(True)
         self.ing_combo.clear()
         self.ing_combo.addItems(ingredients)
@@ -186,7 +187,7 @@ class IngredientBox(QScrollArea):
     def __init__(self, parent=None):
         super().__init__()
         self._parent = parent
-        self.db = parent.db
+        self.db = db
         self.setMinimumSize(200, 500)
 
         self.setObjectName("IngBoxScroll")

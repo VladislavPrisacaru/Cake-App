@@ -1,50 +1,50 @@
 /* ### ConstructorUI.py ### */
 
 /* Main window background */
-QWidget#MainWindow {
+QWidget#MainWindow {{
     background-color: lightgray;
-}
+}}
 
 /* Sidebar frame */
-QFrame#Sidebar {
+QFrame#Sidebar {{
     background-color: #07394B;
-}
+}}
 
 /* Sidebar buttons */
-QPushButton#SidebarButtons {
+QPushButton#SidebarButtons {{
     background-color: transparent;
     color: white;
     font-size: 18px;
     border: none;
     text-align: left;
     padding-left: 35px;
-}
+}}
 
-QPushButton#SidebarButtons[indent="false"] {
+QPushButton#SidebarButtons[indent="false"] {{
     padding-left: 14px;
-}
+}}
 
-QPushButton#SidebarButtons:hover {
+QPushButton#SidebarButtons:hover {{
     background-color: #0D4A62;
-}
+}}
 
-QPushButton#SidebarButtons:pressed {
+QPushButton#SidebarButtons:pressed {{
     background-color: #052B38;
-}
+}}
 
-QPushButton#SidebarButtons[active="true"] {
+QPushButton#SidebarButtons[active="true"] {{
     background-color: #0D4A62;
-}
+}}
 
 /* Sidebar section headers */
-QLabel#Headers {
+QLabel#Headers {{
     color: white;
     font-size: 22px;
     border: none;
     text-align: left;
     padding-left: 10px;
     font-weight: bold;
-}
+}}
 
 
 
@@ -52,67 +52,67 @@ QLabel#Headers {
 
 /* ### AddIngredients.py ### */
 
-QScrollArea#IngredientScrollArea {
+QScrollArea#IngredientScrollArea {{
     background: transparent;
     border: none;
-}
-QScrollArea#IngredientScrollArea > QWidget > QWidget {
+}}
+QScrollArea#IngredientScrollArea > QWidget > QWidget {{
     background: transparent;
-}
-QScrollArea#IngredientScrollArea > QWidget#scrollAreaWidgetContents {
+}}
+QScrollArea#IngredientScrollArea > QWidget#scrollAreaWidgetContents {{
     background: transparent;
-}
+}}
 
-QWidget#AddIngredientsWidget {
+QWidget#AddIngredientsWidget {{
     background-color: lightgray;
-}
+}}
 
-QLabel#HeaderLabel {
+QLabel#HeaderLabel {{
     color: black; 
     font-size: 25px;
-}
+}}
 
-QWidget#Overlay {
+QWidget#Overlay {{
     background-color: rgba(0, 0, 0, 0.5);
-}
+}}
 
 /* Add ingredient Button */
-QPushButton#AddIngredientBtn {
+QPushButton#AddIngredientBtn {{
     background-color: #07394B; 
     color: white; 
     font-size: 20px; 
     border: none; 
     padding: 15px; 
     border-radius: 25px;
-}
+}}
 
-QPushButton#AddIngredientBtn:hover { 
+QPushButton#AddIngredientBtn:hover {{ 
     background-color: #0D4A62
-}
+}}
 
-QPushButton#AddIngredientBtn:pressed { 
+QPushButton#AddIngredientBtn:pressed {{ 
     background-color: #052B38 
-}
+}}
 
 /* The add/edit ingredient modal */
-QFrame#GetIngredientModal {
+QFrame#GetIngredientModal {{
     background-color: lightgray;
     border-radius: 8px;
     padding: 1px;
-}
+}}
 
-QLabel#TitleLabel {
+QLabel#TitleLabel {{
     color: black; 
     font-size: 30px; 
     font-weight: bold;
-}
+}}
 
-QLabel#ModalLabels {
+QLabel#ModalLabels {{
     color: black; 
     font-size: 20px;
-}
+}}
 
-QPushButton#ModalBtns {
+QPushButton#ModalBtns {{
     background-color: #07394B; 
     color: white; 
     font-size: 20px; 
@@ -120,43 +120,43 @@ QPushButton#ModalBtns {
     padding: 4px; 
     border-radius: 15px;
     padding-left: 10px; 
-    padding-right: 10px;}
+    padding-right: 10px;}}
                         
-QPushButton#ModalBtns:hover { 
+QPushButton#ModalBtns:hover {{ 
     background-color: #0D4A62
-}
+}}
                 
-QPushButton#ModalBtns:pressed { 
+QPushButton#ModalBtns:pressed {{ 
     background-color: #052B38
-}
+}}
 
-QLineEdit#ModalEdits {
+QLineEdit#ModalEdits {{
     padding: 1px;
     border-radius: 4px;
     font-size: 18px;
-}
+}}
 
 QLineEdit#ModalEdits:focus,
-QLineEdit#ModalEdits:hover {
+QLineEdit#ModalEdits:hover {{
     border: 1px solid #07394B;
     border-radius: 4px;
-} 
+}} 
 
 QComboBox#UnitCombos:focus,
-QComboBox#UnitCombos:hover {
+QComboBox#UnitCombos:hover {{
     border: 1px solid #07394B;
     border-radius: 4px;
-}
+}}
 
-QComboBox#UnitCombos::drop-down {
+QComboBox#UnitCombos::drop-down {{
     subcontrol-origin: padding;
     subcontrol-position: center right;
     width: 10px;
     height: 10px;
-    image: url('Cake-App/main_app/Recipes/black_arrow.png');
+    image: url({black_arrow});
     border: none;
     padding-right: 8px;
-}
+}}
 
 
 
@@ -164,143 +164,143 @@ QComboBox#UnitCombos::drop-down {
 
 /* ### AddRecipe.py ### */
 
-QWidget#AddRecipeWidget {
+QWidget#AddRecipeWidget {{
     background-color: lightgray;
-}
+}}
 
-QLabel#AddRecipeLabels {
+QLabel#AddRecipeLabels {{
     color: black; 
     font-size: 25px;
-}
+}}
 
-QLabel#totallabels {
+QLabel#totallabels {{
     color: black; 
     font-size: 32px; 
     padding: 6px;
-}
+}}
 
-QLineEdit#RecipeNameEdit {
+QLineEdit#RecipeNameEdit {{
     padding: 2px;
     border-radius: 4px;
     font-size: 22px;
-}
+}}
                 
-QLineEdit#RecipeNameEdit:focus {
+QLineEdit#RecipeNameEdit:focus {{
     border: 1px solid #07394B;
-}
+}}
 
-QLineEdit#RecipeNameEdit:hover {
+QLineEdit#RecipeNameEdit:hover {{
     border: 1px solid #07394B;
-}
+}}
 
-QPushButton#AddRecipeBtns {
+QPushButton#AddRecipeBtns {{
     background-color: #07394B; 
     color: white; 
     font-size: 22px; 
     border: none; 
     padding: 7px; 
     border-radius: 15px;
-}
+}}
 
-QPushButton#AddRecipeBtns:hover {
+QPushButton#AddRecipeBtns:hover {{
     background-color: #0D4A62
-}
+}}
 
-QPushButton#AddRecipeBtns:pressed {
+QPushButton#AddRecipeBtns:pressed {{
     background-color: #052B38
-}
+}}
 
 /* The Combo Box */
-QComboBox#AddIngredientCombo {
+QComboBox#AddIngredientCombo {{
     background-color: #07394B;
     color: white;
     font-size: 22px;
     border: none;
     padding: 7px;
     border-radius: 15px;
-}
+}}
 
-QComboBox#AddIngredientCombo:hover {
+QComboBox#AddIngredientCombo:hover {{
     background-color: #0D4A62;
-}
+}}
 
-QComboBox#AddIngredientCombo::drop-down {
+QComboBox#AddIngredientCombo::drop-down {{
     subcontrol-origin: padding;
     subcontrol-position: center right;
     width: 20px;
     height: 20px;
-    image: url('Cake-App/main_app/Recipes/white_arrow.png');
+    image: url({white_arrow});
     border: none;
     padding-right: 8px;
-}
+}}
 
-QComboBox#AddIngredientCombo QAbstractItemView {
+QComboBox#AddIngredientCombo QAbstractItemView {{
     background-color: #07394B;
     color: white;
     selection-background-color: #0D4A62;
     border-radius: 10px;
     font-size: 20px;
     padding: 5px;
-}        
+}}        
 
-QComboBox#AddIngredientCombo QAbstractItemView QScrollBar:vertical {
+QComboBox#AddIngredientCombo QAbstractItemView QScrollBar:vertical {{
     background: #07394B;
     width: 12px;
     margin: 0px;
-    border-radius: 10px;}   
+    border-radius: 10px;}}   
 
-QComboBox#AddIngredientCombo QAbstractItemView QScrollBar::handle:vertical {
+QComboBox#AddIngredientCombo QAbstractItemView QScrollBar::handle:vertical {{
     background: #0D4A62; 
     min-height: 20px;
-    border-radius: 8px;}
+    border-radius: 8px;}}
                 
 QComboBox#AddIngredientCombo QAbstractItemView QScrollBar::add-page:vertical,
-QComboBox#AddIngredientCombo QAbstractItemView QScrollBar::sub-page:vertical {
+QComboBox#AddIngredientCombo QAbstractItemView QScrollBar::sub-page:vertical {{
     height: 0px;
     subcontrol-origin: margin;
     subcontrol-position: top;  /* for add-line */
     background: none;
     border: none;
-}
+}}
                 
 QComboBox#AddIngredientCombo QAbstractItemView::up-button, 
-QComboBox#AddIngredientCombo QAbstractItemView::down-button {
+QComboBox#AddIngredientCombo QAbstractItemView::down-button {{
     /* Hide the scrollbar buttons completely */
     width: 0px;
-    height: 0px;}
+    height: 0px;}}
 
 /* Ingredient Box */
 
-QWidget#RowWidget {
+QWidget#RowWidget {{
     background-color: #0D4A62;
     border-radius: 10px;
     border: 1px solid #d0d0d0;
     padding: 10px;
     margin-bottom: 10px;
-}
+}}
 
 /* Inner scrollable area */
-QScrollArea#IngBoxScroll {
+QScrollArea#IngBoxScroll {{
     background-color: transparent;
     border: none;
-}
+}}
 
-QWidget#ContentWidget {
+QWidget#ContentWidget {{
     background-color: white;
     border: 1px solid #0D4A62;
-}
+}}
 
 /* Ingredient label (e.g. "Sugar") */
-QLabel#IngredientName {
+QLabel#IngredientName {{
     font-size: 18px;
     color: #fff;
     background-color: transparent;
     padding: 4px 8px;
     border: none;
-}
+}}
 
 /* Ingredient weight input */
-QLineEdit#WeightEdit {
+QLineEdit#WeightEdit {{
     font-size: 18px;
     border-radius: 6px;
     padding: 6px 10px;
@@ -308,18 +308,18 @@ QLineEdit#WeightEdit {
     color: black;
     border: 1px solid #ccc;
     min-width: 60px;
-}
+}}
 
-QLineEdit#WeightEdit:focus {
+QLineEdit#WeightEdit:focus {{
     border: 1px solid #07394B;
-}
+}}
 
-QLineEdit#WeightEdit:hover {
+QLineEdit#WeightEdit:hover {{
     border: 1px solid #07394B;
-}
+}}
 
 /* Weight unit combo (e.g. g, ml, etc) */
-QComboBox#WeightCombo {
+QComboBox#WeightCombo {{
     font-size: 18px;
     border-radius: 6px;
     padding: 6px 10px;
@@ -327,77 +327,77 @@ QComboBox#WeightCombo {
     color: black;
     border: 1px solid #ccc;
     min-width: 60px;
-}
+}}
 
-QComboBox#WeightCombo:focus {
+QComboBox#WeightCombo:focus {{
     border: 1px solid #07394B;
-}
+}}
 
-QComboBox#WeightCombo:hover {
+QComboBox#WeightCombo:hover {{
     border: 1px solid #07394B;
-}
+}}
 
-QComboBox#WeightCombo::drop-down {
+QComboBox#WeightCombo::drop-down {{
     color: black;
     border: none;
-}
+}}
 
 /* ComboBox dropdown menu */
-QComboBox#WeightCombo QListView {
+QComboBox#WeightCombo QListView {{
     background-color: white;
     color: black;
     border: none;
     padding: 5px;
-}
+}}
 
-QComboBox#WeightCombo::down-arrow {
+QComboBox#WeightCombo::down-arrow {{
     subcontrol-origin: padding;
     subcontrol-position: center right;
     width: 20px;
     height: 20px;
-    image: url('Cake-App/main_app/Recipes/black_arrow.png');
+    image: url({black_arrow});
     border: none;
     padding-right: 8px;
-}
+}}
 
 /* Delete button */
-QPushButton#DeleteBtn {
+QPushButton#DeleteBtn {{
     background-color: #d9534f;
     color: white;
     border: none;
     padding: 6px 12px;
     border-radius: 6px;
     font-weight: bold;
-}
+}}
 
-QPushButton#DeleteBtn:hover {
+QPushButton#DeleteBtn:hover {{
     background-color: #c9302c;
-}
+}}
 
-QPushButton#DeleteBtn:pressed {
+QPushButton#DeleteBtn:pressed {{
     background-color: #ac2925;
-}
+}}
 
 /* Scrollbar (optional override for OS dark themes) */
-QScrollBar#IngBoxScroll:vertical {
+QScrollBar#IngBoxScroll:vertical {{
     background: transparent;
     width: 8px;
     margin: 0px 0px 0px 0px;
-}
+}}
 
-QScrollBar#IngBoxScroll::handle:vertical {
+QScrollBar#IngBoxScroll::handle:vertical {{
     background: #aaa;
     border-radius: 4px;
-}
+}}
 
-QScrollBar#IngBoxScroll::handle:vertical:hover {
+QScrollBar#IngBoxScroll::handle:vertical:hover {{
     background: #888;
-}
+}}
 
 QScrollBar#IngBoxScroll::add-line:vertical,
-QScrollBar#IngBoxScroll::sub-line:vertical {
+QScrollBar#IngBoxScroll::sub-line:vertical {{
     height: 0px;
-}
+}}
 
 
 
@@ -405,11 +405,11 @@ QScrollBar#IngBoxScroll::sub-line:vertical {
 
 /* ### ManageRecipe.py ### */
 
-QWidget#ManageRecipeWidget {
+QWidget#ManageRecipeWidget {{
     background-color: lightgray;
-}
+}}
 
-QLabel#ManageRecipeLabel {
+QLabel#ManageRecipeLabel {{
     color: black; 
     font-size: 25px;
-}
+}}

@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import (QScrollArea, QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QFrame, QGridLayout, QSizePolicy)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QPixmap
+from Database import db
 import os
 from Helper import HelperClass
 from collections import defaultdict
@@ -12,7 +13,7 @@ class ManageRecipesWidget(QWidget):
         self.setObjectName("ManageRecipeWidget")
 
         self._parent = parent
-        self.db = self._parent.db
+        self.db = db
 
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
@@ -87,9 +88,9 @@ class ManageRecipesWidget(QWidget):
             ingredient_name, used_weight, used_unit, stock_weight, stock_unit, price, price_unit = ingredient
             
             text += (
-                f"Ingredient: {ingredient_name}"
-                f"&nbsp;&nbsp;&nbsp;•Weight: {used_weight}{used_unit}<br>"
-                f"&nbsp;&nbsp;&nbsp;•Price: {price_unit}{price}</html>")
+                f"Ingredient: {ingredient_name}<br>"
+                f"&nbsp;&nbsp;&nbsp;•Weight: {used_weight}{used_unit}"
+                f"&nbsp;&nbsp;&nbsp;•Price: {price_unit}{price}<br></html>")
             
         recipe_btn = HelperClass.AnimatedLabel((255, 255, 255),(13, 74, 98),(0, 0, 0),(255, 255, 255))
   

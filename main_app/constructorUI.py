@@ -3,7 +3,7 @@ from PySide6.QtGui import QFontDatabase
 from PySide6.QtCore import Qt
 import sys, os
 from Animations import fade_in_animation
-from Database import DatabaseManager
+from Database import db
 from Main.MainWidget import MainWidget
 from Recipes.AddRecipe import AddRecipeWidget
 from Recipes.ManageRecipes import ManageRecipesWidget
@@ -16,12 +16,18 @@ from Stock.ManageStock import ManageStockWidget
 from Options import OptionsWidget
 
 
-def load_style(path):
-    with open(path, "r") as f:
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+def load_style(rel_qss_path):
+    style_file = resource_path(rel_qss_path)
+    with open(style_file, 'r') as f:
         return f.read()
     
-
-db = DatabaseManager("cakeshop.db")
 
 class Sidebar(QFrame):
     def __init__(self, main_window):
@@ -215,8 +221,13 @@ os.environ["QT_SCALE_FACTOR"] = "1"
 
 app = QApplication(sys.argv)
 
-style_path = os.path.join(os.path.dirname(__file__), "style.qss")
-app.setStyleSheet(load_style(style_path))
+black_arrow_path = resource_path("Cake-App/main_app/Recipes/black_arrow.png").replace("\\", "/")
+white_arrow_path = resource_path("Cake-App/main_app/Recipes/white_arrow.png").replace("\\", "/")
+
+qss = load_style("Cake-App/main_app/style.qss")
+qss = qss.format(black_arrow=black_arrow_path, white_arrow=white_arrow_path)
+
+app.setStyleSheet(qss)
 
 window = MainWindow(db)
 window.show()

@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy, QScrollArea, QLineEdit, QComboBox, QFrame, QGridLayout
 from PySide6.QtCore import Qt, QRegularExpression, Signal
 from PySide6.QtGui import QIntValidator, QDoubleValidator, QRegularExpressionValidator
+from Database import db
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -14,7 +15,7 @@ class AddIngredientsWidget(QWidget):
         self.setObjectName("AddIngredientsWidget")
 
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-        self.db = parent.db
+        self.db = db
         self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
 
@@ -84,6 +85,9 @@ class AddIngredientsWidget(QWidget):
         self.main_layout.addWidget(self.scroll_area)
 
     def load_ingredients(self):
+        for i in range(3):
+            self.grid_layout.setColumnStretch(i, 1)
+
         for i in reversed(range(self.grid_layout.count())):
             widget = self.grid_layout.itemAt(i).widget()
             if widget:
@@ -143,7 +147,7 @@ class GetIngredients(QFrame):
         self.initUI()
         self.adjustSize()
 
-        self.db = parent.db
+        self.db = db
         
         # Set initial mode
         self.set_mode("add")
