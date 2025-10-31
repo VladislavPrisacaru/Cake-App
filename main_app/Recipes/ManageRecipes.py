@@ -63,6 +63,9 @@ class ManageRecipesWidget(QWidget):
         pass
     
     def load_recipes(self):
+        for i in range(3):
+            self.grid_layout.setColumnStretch(i, 1)
+            
         for i in reversed(range(self.grid_layout.count())):
             widget = self.grid_layout.itemAt(i).widget()
             if widget:

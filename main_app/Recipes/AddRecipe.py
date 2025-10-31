@@ -176,6 +176,7 @@ class AddRecipeWidget(QWidget):
         self.ingredient_box.add_ingredient(last_ing)
     
     def save_recipe(self):
+
         self.ingredient_box.save_current_recipe()
 
     def reset_recipe(self):
@@ -328,7 +329,7 @@ class IngredientBox(QScrollArea):
             ingredient = id, weight, unit
 
             ingredients.append(ingredient)
-
+        
         self.db.add_recipe(self._parent.recipe_name.text(), ingredients)
 
         self._parent._parent.manage_recipe_window.load_recipes()

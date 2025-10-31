@@ -25,7 +25,7 @@ class DatabaseManager:
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS recipes(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL
+                name TEXT NOT NULL UNIQUE
             );
         """)
 
@@ -107,16 +107,23 @@ class DatabaseManager:
         return Id[0] if Id else None
     
     def add_recipe(self, recipe_name, ingredients=[]):
+        self.cursor.execute("SELECT id FROM recipes WHERE name = ?;", (recipe_name,))
+        if self.cursor.fetchone():
+            print(f"Recipe '{recipe_name}' already exists!")
+            return False
+
         self.cursor.execute("INSERT INTO recipes(name) VALUES (?);", (recipe_name,))
         recipe_id = self.cursor.lastrowid
 
         for ing_id, ing_weight, ing_weight_unit in ingredients:
             self.cursor.execute("""INSERT INTO recipe_ingredients(recipe_id, ingredient_id, ingredient_weight, ingredient_weight_unit)
-                                   VALUES (?, ?, ?, ?);""", (recipe_id, ing_id, ing_weight, ing_weight_unit))
+                                VALUES (?, ?, ?, ?);""", (recipe_id, ing_id, ing_weight, ing_weight_unit))
             
         self.connection.commit()
 
         print("recipe saved")
+        return True
+
     
     def get_all_recipes(self):
         self.cursor.execute("""
