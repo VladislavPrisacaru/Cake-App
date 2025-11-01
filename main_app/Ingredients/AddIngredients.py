@@ -14,7 +14,7 @@ class AddIngredientsWidget(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("AddIngredientsWidget")
 
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.db = db
         self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
@@ -44,7 +44,7 @@ class AddIngredientsWidget(QWidget):
 
         add_btn = QPushButton("Add Ingredient")
         add_btn.setObjectName("AddIngredientBtn")
-        add_btn.setMinimumWidth(500)
+        add_btn.setMinimumWidth(300)
         add_btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
         layout.addStretch() # so its at teh center of the screen
@@ -123,6 +123,7 @@ class AddIngredientsWidget(QWidget):
         
         # Configure the existing modal widget based on mode
         self.modal_widget.set_mode(mode, ingredient)
+        self.modal_widget.adjustSize()
         
         # Position and show the modal in the centre
         self.modal_widget.setGeometry(

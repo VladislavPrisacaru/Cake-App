@@ -283,7 +283,7 @@ class IngredientBox(QScrollArea):
             current_weight += weight
 
         self._parent.price.setText(f"{current_price:.2f}")
-        self._parent.weight.setText(f"{current_weight}")
+        self._parent.weight.setText(f"{current_weight:.2f}")
     
     def weight_to_grams(self, weight, unit):
         conversions = {

@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QFrame, QSizePolicy, QHBoxLayout, QStackedWidget, QLabel
-from PySide6.QtGui import QFontDatabase
+from PySide6.QtGui import QFontDatabase, QFont
 from PySide6.QtCore import Qt
 import sys, os
 from Animations import fade_in_animation
@@ -41,16 +41,17 @@ class Sidebar(QFrame):
         self.main_window = main_window # Reference to the main window class
         self.layout = QVBoxLayout(self)
 
-        self.create_btns()
-        self.active_btn = False
-
-        self.layout.addStretch()
         self.layout.setSpacing(10)
         self.layout.setContentsMargins(0, 15, 0, 0)
 
+        self.create_btns()
+        self.layout.addStretch()
+        self.active_btn = False
+
     def create_button(self, text, indent=True): # to create loads of buttons easy
         button = QPushButton(text, self)
-        button.setFixedHeight(45)
+        button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        button.setMinimumHeight(45)
         button.setProperty("indent", indent)
         button.setObjectName("SidebarButtons")
         self.layout.addWidget(button)
@@ -211,15 +212,16 @@ class MainWindow(QMainWindow):
         self.db.close_conn()
         event.accept()
 
-#QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-#QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
-
-# scaling
-os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1" # 100%
+os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
 os.environ["QT_SCALE_FACTOR"] = "1"
-#os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
+os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "0"
 
 app = QApplication(sys.argv)
+
+dpi_scale = QApplication.primaryScreen().logicalDotsPerInch() / 96
+font = QFont()
+font.setPointSizeF(10 * dpi_scale)
+app.setFont(font)
 
 black_arrow_path = resource_path("Cake-App/main_app/Recipes/black_arrow.png").replace("\\", "/")
 white_arrow_path = resource_path("Cake-App/main_app/Recipes/white_arrow.png").replace("\\", "/")
