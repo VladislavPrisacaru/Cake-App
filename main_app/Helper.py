@@ -22,7 +22,7 @@ class HelperClass:
             validator = QRegularExpressionValidator(regex)
             line_edit.setValidator(validator)
         elif label_text == "Ingredient Weight:" or label_text == "Ingredient Price:":
-            validator = QDoubleValidator(0.0, 99999.99, 2)
+            validator = QDoubleValidator(0.01, 99999.99, 2)
             validator.setNotation(QDoubleValidator.StandardNotation)
             line_edit.setValidator(validator)
 

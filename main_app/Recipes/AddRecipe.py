@@ -176,8 +176,8 @@ class AddRecipeWidget(QWidget):
         self.ingredient_box.add_ingredient(last_ing)
     
     def save_recipe(self):
-
         self.ingredient_box.save_current_recipe()
+        self.reset_recipe()
 
     def reset_recipe(self):
         self.ingredient_box.delete_all_rows()

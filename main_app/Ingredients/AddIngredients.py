@@ -238,6 +238,9 @@ class GetIngredients(QFrame):
 
     def save_event(self): # the save button
         # get the ingredient values
+        self.fix_dot_weight(self.ing_price.text(), self.ing_price)
+        self.fix_dot_weight(self.ing_weight.text(), self.ing_weight)
+
         name = self.ing_name.text()
         weight = self.ing_weight.text()
         price = self.ing_price.text()
@@ -248,17 +251,18 @@ class GetIngredients(QFrame):
 
         if not name or not weight or not price:
             return
+        
+        self.parent().hide_modal()
 
         #save or update ingredient in the database based on mode
         if self.mode == "add":
-            self.db.add_ingredient(name, weight, weight_unit, price, price_unit)
+            self.db.add_ingredient(name, float(weight), weight_unit, int(price), price_unit)
         elif self.mode == "edit" and self.current_ingredient:
             old_name = self.current_ingredient[1]
             self.db.update_ingredient(old_name, name, weight, weight_unit, price, price_unit)
 
         self.parent().load_ingredients()  # Refresh the list
         self.reset_inputs()
-        self.parent().hide_modal()
         signals.ingredient_added.emit()
 
     def delete_event(self):
@@ -272,6 +276,13 @@ class GetIngredients(QFrame):
         self.parent().hide_modal()
         signals.ingredient_deleted.emit()
 
+    def fix_dot_weight(self, text, line_edit):
+        if text == ".":
+            line_edit.setText("0")
+        
+        if line_edit == self.ing_weight and text in ["", ".", "0", "0.0"]:
+            self.ing_weight.setText("0.01")
+            
     def reset_inputs(self):
         self.ing_weight.setText("")
         self.ing_price.setText("")
