@@ -1,0 +1,6 @@
+cakeshop.db
+*.db
+__pycache__
+*png
+*jpg
+.exe
