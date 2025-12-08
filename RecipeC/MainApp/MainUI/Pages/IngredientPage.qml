@@ -395,7 +395,7 @@ Item {
             Item { Layout.fillWidth: true }
 
             Text {
-                text: `Page ${currentPage}`
+                text: `Page ${currentPage + 1} / ${totalPages}`
                 color: Theme.text_secondary
                 font.family: Theme.font_family
                 font.pointSize: Theme.font_size_small * font_scale
@@ -492,33 +492,37 @@ Item {
                 onCountChanged: updatePage()
             }
 
-            ListModel {
-                id: pageModel
-
-            }
+            ListModel { id: pageModel }
 
             GridView {
                 id: ingredientGrid
 
                 anchors.fill: parent
 
-                cellHeight: width * 0.15
-                cellWidth: width * 0.25
-                //spacing: width * 0.015
+                cellHeight: width * 0.15 + 35
+                cellWidth: width / 4
+                
 
                 model: pageModel
 
-                delegate: IngredientCard {
+                delegate: Item {
                     width: ingredientGrid.cellWidth
                     height: ingredientGrid.cellHeight
 
-                    ingredient_name: name
-                    category: category
-                    n_recipes: n_recipes
-                    total_price: total_price
-                    price_unit: price_unit
-                    total_weight: total_weight
-                    weight_unit: weight_unit
+                    IngredientCard {
+                        anchors.fill: parent
+                        anchors.margins: ingredient_page.width * 0.007
+                        anchors.bottomMargin: ingredient_page.width * 0.015
+
+
+                        ingredient_name: name
+                        category: category
+                        n_recipes: n_recipes
+                        total_price: total_price
+                        price_unit: price_unit
+                        total_weight: total_weight
+                        weight_unit: weight_unit
+                    }
                 }
             }
         }

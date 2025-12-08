@@ -86,7 +86,7 @@ Item {
             RowLayout {
 
                 Layout.fillWidth: true
-                spacing: wrapper.width * 0.2
+                spacing: wrapper.width * 0.22
 
                 ColumnLayout {
                     Layout.fillWidth: true
