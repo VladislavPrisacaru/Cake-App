@@ -1,14 +1,24 @@
 import QtQuick 2.15
 
-Item {
+Rectangle {
+    id: modalOverlay
     anchors.fill: parent
 
-    Rectangle {
-        anchors.fill: parent
+    visible: false
+    color: Theme.overlay_bg
 
-        ColumnLayout {
-            id: add_ingredient_col
-            anchors.fill: parent
-        }
+    MouseArea {
+        anchors.fill: parent
+        enabled: true
+        propagateComposedEvents: false
+    }
+
+    Rectangle {
+        anchors.centerIn: parent
+
+        width: parent.width * 0.5
+        height: parent.height * 0.5
+
+        color: Theme.card_bg
     }
 }

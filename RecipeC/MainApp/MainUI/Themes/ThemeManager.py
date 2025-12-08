@@ -44,7 +44,9 @@ class ThemeManager(QObject):
             "text_primary": "#0f172a",
             "text_secondary": "#475569",
             "text_tertiary": "#64748b",
-            "text_placeholder": "#94a3b8"
+            "text_placeholder": "#94a3b8",
+
+            "overlay_bg": "#88000000"
         }
 
         self._system_main_settings = {
@@ -152,6 +154,10 @@ class ThemeManager(QObject):
 
     def getTextPlaceholder(self):
         return self._colors["text_placeholder"]
+    
+
+    def getOverlayBG(self):
+        return self._colors["overlay_bg"]
 
     # ------------------- Font -------------------
     def getFontFamily(self):
@@ -174,7 +180,6 @@ class ThemeManager(QObject):
 
     def getRadiusSmall(self):
         return self._system_main_settings["radius_small"]
-
 
     # ------------------- QML Properties -------------------
 
@@ -210,6 +215,10 @@ class ThemeManager(QObject):
     text_secondary = Property(str, getTextSecondary, notify=themeChanged)
     text_tertiary = Property(str, getTextTertiary, notify=themeChanged)
     text_placeholder = Property(str, getTextPlaceholder, notify=themeChanged)
+
+
+    overlay_bg = Property(str, getOverlayBG, notify=themeChanged)
+
 
     font_family = Property(str, getFontFamily, notify=dummySignal)
     font_size_small = Property(int, getFontSizeSmall, notify=dummySignal)

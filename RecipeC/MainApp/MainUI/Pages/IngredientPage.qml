@@ -23,6 +23,7 @@ Item {
         }
     }
 
+
     ColumnLayout {
         id: nav_column
         anchors.fill: parent
@@ -100,7 +101,6 @@ Item {
             //add ingredient button
             Button {
                 id: add_ingredient_btn
-                //property alias model: ingredient_page.ingredient_model
 
                 implicitWidth: ingredient_page.width * 0.23
                 implicitHeight: ingredient_page.height * 0.06
@@ -136,7 +136,10 @@ Item {
                     }
                 }
 
-                onClicked: ingredientModel.append({name: "Name", category: "category", n_recipes: 0, total_price: 123, price_unit: "£", total_weight: 123, weight_unit: "g"})
+                onClicked: {
+                    ingredientModel.append({name: "Name", category: "category", n_recipes: 0, total_price: 123, price_unit: "£", total_weight: 123, weight_unit: "g"})
+                    //modalOverlay.visible = true
+                }
             }
 
             //category combo
@@ -530,4 +533,6 @@ Item {
         Item {Layout.fillHeight: true}
 
     }
+
+    AddIngredient {id: modalOverlay}
 }
