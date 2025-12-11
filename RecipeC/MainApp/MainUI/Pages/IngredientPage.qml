@@ -9,6 +9,8 @@ Item {
     id: ingredient_page
     anchors.fill: parent
 
+    visible: false
+
     property int currentPage: 0
     property int itemsPerPage: 8
     property int totalPages: Math.ceil(ingredientModel.count / itemsPerPage)
