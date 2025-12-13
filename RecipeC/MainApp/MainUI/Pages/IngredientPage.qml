@@ -139,8 +139,8 @@ Item {
                 }
 
                 onClicked: {
-                    ingredientModel.append({name: "Name", category: "category", n_recipes: 0, total_price: 123, price_unit: "£", total_weight: 123, weight_unit: "g"})
-                    //modalOverlay.visible = true
+                    //ingredientModel.append({name: "Name", category: "category", n_recipes: 0, total_price: 123, price_unit: "£", total_weight: 123, weight_unit: "g"})
+                    modalOverlay.visible = true
                 }
             }
 

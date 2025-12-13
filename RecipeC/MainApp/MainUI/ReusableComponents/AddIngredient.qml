@@ -2,6 +2,9 @@ import QtQuick 2.15
 
 Rectangle {
     id: modalOverlay
+
+    property string mode: "add"
+
     anchors.fill: parent
 
     visible: false
@@ -20,5 +23,7 @@ Rectangle {
         height: parent.height * 0.5
 
         color: Theme.card_bg
+
+
     }
 }
