@@ -504,7 +504,7 @@ Item {
 
                 anchors.fill: parent
 
-                cellHeight: width * 0.15 + 35
+                cellHeight: width * 0.15 + 30
                 cellWidth: width / 4
                 
 

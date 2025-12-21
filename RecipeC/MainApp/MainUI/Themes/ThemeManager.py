@@ -21,6 +21,7 @@ class ThemeManager(QObject):
             "background": "#f8fafc",
             "card_bg": "#ffffff",
             "card_border": "#E2E8F0",
+            "card_border_dark": "#D6DDE7",
             "card_input_bg": "#f8fafc",
             "card_border_hover": "#334155",
             
@@ -56,7 +57,8 @@ class ThemeManager(QObject):
             "font_size_heading_small": 22,
             "font_size_heading": 30,
             "radius_big": 18,
-            "radius_small": 10
+            "radius_small": 10,
+            "radius_tiny": 5
         }
 
         self._colors = self._white_theme
@@ -97,6 +99,9 @@ class ThemeManager(QObject):
 
     def getCardBorder(self):
         return self._colors["card_border"]
+    
+    def getCardBorderDark(self):
+        return self._colors["card_border_dark"]
 
     def getCardInputBG(self):
         return self._colors["card_input_bg"]
@@ -180,6 +185,9 @@ class ThemeManager(QObject):
 
     def getRadiusSmall(self):
         return self._system_main_settings["radius_small"]
+    
+    def getRadiusTiny(self):
+        return self._system_main_settings["radius_tiny"]
 
     # ------------------- QML Properties -------------------
 
@@ -194,6 +202,7 @@ class ThemeManager(QObject):
     background = Property(str, getBackground, notify=themeChanged)
     card_bg = Property(str, getCardBG, notify=themeChanged)
     card_border = Property(str, getCardBorder, notify=themeChanged)
+    card_border_dark = Property(str, getCardBorderDark, notify=themeChanged)
     card_input_bg = Property(str, getCardInputBG, notify=themeChanged)
     card_border_hover = Property(str, getCardBorderHover, notify=themeChanged)
 
@@ -227,3 +236,4 @@ class ThemeManager(QObject):
     font_size_heading = Property(int, getFontSizeHeading, notify=dummySignal)
     radius_big = Property(int, getRadiusBig, notify=dummySignal)
     radius_small = Property(int, getRadiusSmall, notify=dummySignal)
+    radius_tiny = Property(int, getRadiusTiny, notify=dummySignal)
